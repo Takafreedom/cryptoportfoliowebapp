@@ -1,0 +1,114 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Web3 Portfolio Pro</title>
+    <!-- スマホホーム画面用設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 p-4 pb-20">
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold mb-6 text-indigo-400">💎 Web3 Portfolio Pro</h1>
+
+        <!-- 入力フォーム -->
+        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 mb-6">
+            <h2 class="text-sm font-bold mb-3 text-slate-400 uppercase">資産を追加</h2>
+            <div class="grid grid-cols-2 gap-2">
+                <select id="type" class="bg-slate-800 p-2 rounded col-span-2 text-sm border border-slate-700">
+                    <option value="Token">トークン</option>
+                    <option value="NFT">NFT</option>
+                </select>
+                <input type="text" id="name" placeholder="銘柄名 (例: ETH)" class="bg-slate-800 p-2 rounded col-span-2 text-sm border border-slate-700">
+                <select id="chain" class="bg-slate-800 p-2 rounded col-span-2 text-sm border border-slate-700">
+                    <option value="BTC">Bitcoin (BTC)</option>
+                    <option value="ETH">Ethereum (ETH)</option>
+                    <option value="POL">Polygon (POL)</option>
+                    <option value="BNB">BNB Chain (BNB)</option>
+                    <option value="SOL">Solana (SOL)</option>
+                    <option value="Other">その他</option>
+                </select>
+                <input type="number" id="qty" placeholder="数量" class="bg-slate-800 p-2 rounded col-span-1 text-sm border border-slate-700">
+                <input type="number" id="price" placeholder="単価($)" class="bg-slate-800 p-2 rounded col-span-1 text-sm border border-slate-700">
+                <button onclick="saveAsset()" class="bg-indigo-600 hover:bg-indigo-500 py-2 rounded col-span-2 font-bold mt-2 transition">保存する</button>
+            </div>
+        </div>
+
+        <!-- チャート -->
+        <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 mb-6 h-48 flex justify-center">
+            <canvas id="chart"></canvas>
+        </div>
+
+        <!-- 資産リスト -->
+        <div id="assetList" class="space-y-3"></div>
+    </div>
+
+    <script>
+        let assets = JSON.parse(localStorage.getItem('myAssets')) || [];
+        let chart;
+
+        function saveAsset() {
+            const asset = {
+                id: Date.now(),
+                type: document.getElementById('type').value,
+                name: document.getElementById('name').value,
+                chain: document.getElementById('chain').value,
+                qty: parseFloat(document.getElementById('qty').value) || 0,
+                price: parseFloat(document.getElementById('price').value) || 0
+            };
+            assets.push(asset);
+            update();
+        }
+
+        function deleteAsset(id) {
+            if (confirm('この資産を削除しますか？')) {
+                assets = assets.filter(a => a.id !== id);
+                update();
+            }
+        }
+
+        function update() {
+            localStorage.setItem('myAssets', JSON.stringify(assets));
+            renderList();
+            renderChart();
+        }
+
+        function renderList() {
+            const list = document.getElementById('assetList');
+            list.innerHTML = assets.map(a => `
+                <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold">${a.name} <span class="text-[10px] bg-slate-700 px-1 py-0.5 rounded ml-1">${a.type}</span></p>
+                        <p class="text-[11px] text-slate-400 font-mono">${a.chain} | ${a.qty} @ $${a.price.toLocaleString()}</p>
+                    </div>
+                    <button onclick="deleteAsset(${a.id})" class="text-red-400 text-xs hover:text-red-300">削除</button>
+                </div>
+            `).join('');
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('chart').getContext('2d');
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: assets.map(a => a.name),
+                    datasets: [{ 
+                        data: assets.map(a => a.qty * a.price), 
+                        backgroundColor: ['#6366f1', '#a855f7', '#ec4899', '#f59e0b', '#10b981'] 
+                    }]
+                },
+                options: { plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 10 } } } }, maintainAspectRatio: false }
+            });
+        }
+        
+        update();
+    </script>
+</body>
+</html>
+
+```
