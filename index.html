@@ -30,7 +30,8 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- アイコンライブラリ(Font Awesome)のバージョンを最新の6.5.1にアップデートしてXのロゴを表示対応 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- 安全なAES-256暗号化/復号のためにCryptoJSをロード -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -310,7 +311,7 @@
                             保存
                         </button>
                     </div>
-                    <!-- サポートリンク (新設) -->
+                    <!-- サポートリンク -->
                     <div class="flex flex-col gap-2 pt-2 border-t border-gray-100 dark:border-slate-850/60">
                         <a href="https://aistudio.google.com/" target="_blank" class="text-xs text-indigo-400 hover:underline flex items-center gap-1.5 font-bold">
                             <i class="fa-solid fa-circle-question"></i> 👉無料の API キー取得はこちら(Google AI Studio)
@@ -715,7 +716,7 @@
     </div>
 
     <!-- =====================================
-         JAVASCRIPT CODE (アプリ本体のロジック)
+         JAVASCRIPT CODE (アプリ本体 of Logic)
     ====================================== -->
     <script>
         // アプリケーションステート管理
@@ -1269,7 +1270,7 @@
         }
 
         // =====================================
-        // 👥 ウォレット & タスク別 プロファイル管理 (リネーム・肩越し覗き見防止)
+        // 👥 ウォレット & タスク別 プロファイル管理
         // =====================================
         function renderAccounts() {
             const container = document.getElementById('accountList');
@@ -1878,6 +1879,7 @@
             }
         }
 
+        // 外観テーマ
         function setTheme(theme) {
             state.theme = theme;
             localStorage.setItem("theme", theme);
@@ -2084,4 +2086,3 @@
     </script>
 </body>
 </html>
-
