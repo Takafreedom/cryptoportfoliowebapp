@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Web3 Portfolio Pro V14</title>
+    <title>Web3 Portfolio Pro V15</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -56,6 +56,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-100 font-sans transition-colors duration-300 relative min-h-screen safe-pb overflow-x-hidden">
     
+    <!-- -->
     <!-- 免責事項 同意モーダル -->
     <div id="disclaimerModal" class="fixed inset-0 bg-slate-950/95 z-[210] flex items-center justify-center p-4 transition-opacity duration-500 hidden">
         <div class="bg-white dark:bg-slate-900 w-full max-w-sm p-6 rounded-3xl border-2 border-rose-500/30 shadow-2xl flex flex-col max-h-[90vh]">
@@ -67,7 +68,7 @@
             <div class="flex-1 overflow-y-auto text-xs text-gray-600 dark:text-slate-300 leading-relaxed mb-6 bg-gray-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-850 hide-scrollbar space-y-3">
                 <p class="font-bold">本アプリは、ユーザー自身が入力した数値を元に計算を行う「ポートフォリオ・シミュレーター（メモツール）」であり、実際のブロックチェーンや外部ウォレットと直接連携するものではありません。</p>
                 <p>アプリ内で表示される各アセットの価格や損益は、外部APIを利用した参考値であり、市場の正確な取引価格やリアルタイムの流動性を完全に保証するものではありません。</p>
-                <p>ブラウザのデータ消去や不具合によるデータ消失、または本アプリが表示した情報に基づいて行われた投資判断によって生じた直接的・間接的な損失について、開発者および提供者は一切の責任を負いません。</p>
+                <p>ブラウザ of データ消去や不具合によるデータ消失、または本アプリが表示した情報に基づいて行われた投資判断によって生じた直接的・間接的な損失について、開発者および提供者は一切の責任を負いません。</p>
                 <p class="font-bold text-rose-400">必ずご自身で定期的な「暗号化バックアップ（データ保存）」を行い、安全な場所に保存していただくようお願いいたします。</p>
             </div>
             
@@ -83,6 +84,7 @@
         <span id="toastMessage">完了しました</span>
     </div>
 
+    <!-- -->
     <!-- パスコードロック画面 -->
     <div id="lockScreen" class="fixed inset-0 bg-white dark:bg-slate-950 z-[100] flex flex-col items-center justify-center transition-opacity duration-500 hidden">
         <div class="text-center mb-8">
@@ -119,6 +121,7 @@
     <!-- アプリメインコンテンツコンテナ -->
     <div class="max-w-md mx-auto h-full relative" id="mainAppContent">
         
+        <!-- -->
         <!-- =====================================
              VIEW: HOME (ポートフォリオダッシュボード)
         ====================================== -->
@@ -131,7 +134,7 @@
                     </div>
                     <div>
                         <h1 class="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                            Portfolio Pro V14
+                            Portfolio Pro V15
                         </h1>
                     </div>
                 </div>
@@ -202,6 +205,7 @@
                 </div>
             </div>
 
+            <!-- -->
             <!-- チャートセクション -->
             <div class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-100 dark:border-slate-800/80 mb-6 shadow-sm">
                 <div class="flex justify-center mb-4 bg-gray-50 dark:bg-slate-950 p-1 rounded-xl border border-gray-100 dark:border-slate-800">
@@ -249,6 +253,7 @@
             </div>
         </div>
 
+        <!-- -->
         <!-- =====================================
              VIEW: ACCOUNTS (ウォレット & タスク別 プロファイル管理)
         ====================================== -->
@@ -288,6 +293,7 @@
             </div>
         </div>
 
+        <!-- -->
         <!-- =====================================
              VIEW: SETTINGS (各種設定)
         ====================================== -->
@@ -339,17 +345,22 @@
                     </div>
                 </div>
 
-                <!-- プロファイル設定 -->
+                <!-- 👤 新機能: プロフィール設定（端末のアルバムから直接写真を登録） -->
                 <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
-                    <h3 class="text-sm font-bold text-indigo-400 mb-3"><i class="fa-solid fa-id-card mr-1.5"></i>プロファイル設定</h3>
+                    <h3 class="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-1.5">
+                        <i class="fa-solid fa-id-card"></i> プロフィール設定
+                    </h3>
                     <div class="flex items-center gap-4">
                         <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center border border-slate-700 relative">
                             <i id="settingsProfilePlaceholder" class="fa-solid fa-user text-slate-500 text-xl"></i>
                             <img id="settingsProfileImg" class="w-full h-full object-cover hidden">
                         </div>
                         <div class="flex-1">
-                            <input type="text" id="profileImgUrl" placeholder="画像のURLを入力" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3 py-2 text-xs focus:outline-none mb-2">
-                            <button onclick="saveProfileImage()" class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 text-xs px-3 py-1.5 rounded-lg font-bold transition">更新する</button>
+                            <input type="file" id="profileImgFile" accept="image/*" class="hidden" onchange="handleProfileImgUpload(event)">
+                            <button onclick="triggerProfileImgSelect()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow-lg shadow-indigo-500/10 mb-2">
+                                <i class="fa-solid fa-image"></i> 写真を選択する
+                            </button>
+                            <p class="text-[9px] text-gray-500 dark:text-slate-500">※お持ちの写真フォルダから顔写真などをアップロードできます。自動で軽量丸型に加工・保存されます。</p>
                         </div>
                     </div>
                 </div>
@@ -716,6 +727,7 @@
 
     </div>
 
+    <!-- -->
     <!-- =====================================
          JAVASCRIPT CODE (アプリ本体のロジック)
     ====================================== -->
@@ -736,11 +748,9 @@
             showCombinedSum: localStorage.getItem("showCombinedSum") === "true",
             disclaimerAgreed: localStorage.getItem("disclaimerAgreed") === "true",
             
-            // コアデータ
+            // コアデータ (初期状態はすべて空っぽでスタート)
             assets: JSON.parse(localStorage.getItem("assets")) || [],
-            // 📂 初期サンプルを完全に空っぽ（[]）にし、ユーザーが自身で追加したプロジェクトだけを認識するプロ仕様に修正！
             projects: JSON.parse(localStorage.getItem("projects")) || [],
-            // 👥 同様に、初期プロファイルもまっさらな状態でスタート
             accounts: JSON.parse(localStorage.getItem("accounts")) || [],
             
             editingAssetId: null,
@@ -759,7 +769,6 @@
             
             document.getElementById('geminiApiKey').value = state.apiKey;
             document.getElementById('goalAmountInput').value = state.goalAmount;
-            document.getElementById('profileImgUrl').value = state.profileImg;
             document.getElementById('toggleCombinedSum').checked = state.showCombinedSum;
             
             updateProfileUI();
@@ -1757,6 +1766,53 @@
         }
 
         // =====================================
+        // 🆕 新機能: プロフィール写真アップロード ＆ リサイズ・高圧縮保存 (V15追加)
+        // =====================================
+        function triggerProfileImgSelect() {
+            document.getElementById('profileImgFile').click();
+        }
+
+        function handleProfileImgUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showToast("プロフィール画像を最適化中...");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // LocalStorageの容量制限（5MB）を確実にクリアするため、
+                    // ヘッダー表示に最適な128x128ピクセルにCanvasで自動縮小・軽量化
+                    const canvas = document.createElement('canvas');
+                    const size = 128;
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+
+                    // アスペクト比を保ちつつ、中央を真四角に切り抜き描画
+                    const minDim = Math.min(img.width, img.height);
+                    const sx = (img.width - minDim) / 2;
+                    const sy = (img.height - minDim) / 2;
+
+                    ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+
+                    // 容量節約のためにJPEG（画質80%）で圧縮し、Base64文字列に変換
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+
+                    // 状態とローカルメモリを同時に更新
+                    state.profileImg = compressedBase64;
+                    localStorage.setItem("profileImg", compressedBase64);
+                    
+                    updateProfileUI();
+                    showToast("プロフィール写真を更新しました！");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file); // 画像をBase64データとして非同期読み込み
+        }
+
+        // =====================================
         // 環境設定その他
         // =====================================
         function togglePrivacy() {
@@ -1798,14 +1854,6 @@
             localStorage.setItem("goalAmount", val);
             showToast("目標金額を更新しました");
             renderDashboard();
-        }
-
-        function saveProfileImage() {
-            const url = document.getElementById('profileImgUrl').value.trim();
-            state.profileImg = url;
-            localStorage.setItem("profileImg", url);
-            updateProfileUI();
-            showToast("プロフィール画像を更新しました");
         }
 
         function updateProfileUI() {
