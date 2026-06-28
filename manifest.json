@@ -1,21 +1,2043 @@
-{
-"short_name": "PortfolioPro",
-"name": "Web3 Portfolio Pro",
-"icons": [
-{
-"src": "./icon-512.png",
-"type": "image/png",
-"sizes": "512x512"
-},
-{
-"src": "./icon-512.png",
-"type": "image/png",
-"sizes": "192x192"
-}
-],
-"start_url": "./index.html",
-"background_color": "#0f172a",
-"theme_color": "#0f172a",
-"display": "standalone",
-"orientation": "portrait"
-}
+<!DOCTYPE html>
+<html lang="ja" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Web3 Portfolio Pro V12</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+    
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- 🍎 iPhone (iOS Safari) 向けの完璧な静的アイコン設定 -->
+    <link rel="apple-touch-icon" href="./icon-512.jpg">
+    <link rel="apple-touch-icon" sizes="152x152" href="./icon-512.jpg">
+    <link rel="apple-touch-icon" sizes="167x167" href="./icon-512.jpg">
+    <link rel="apple-touch-icon" sizes="180x180" href="./icon-512.jpg">
+    <link rel="icon" type="image/jpeg" href="./icon-512.jpg">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { 
+            darkMode: 'class', 
+            theme: { 
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                            950: '#070a13',
+                        }
+                    }
+                } 
+            } 
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 安全なAES-256暗号化のためにCryptoJSを導入 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
+    <style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .glass-modal { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .safe-pb { padding-bottom: calc(6rem + env(safe-area-inset-bottom)); }
+        .nav-pb { padding-bottom: env(safe-area-inset-bottom); }
+        .view-section { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .shake-anim { animation: shake 0.3s ease-in-out; }
+        .blur-text { filter: blur(5px); opacity: 0.5; user-select: none; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-100 font-sans transition-colors duration-300 relative min-h-screen safe-pb overflow-x-hidden">
+    
+    <!-- 免責事項 同意モーダル -->
+    <div id="disclaimerModal" class="fixed inset-0 bg-slate-950/95 z-[210] flex items-center justify-center p-4 transition-opacity duration-500 hidden">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-sm p-6 rounded-3xl border-2 border-rose-500/30 shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-4xl text-rose-500 mb-2 animate-bounce"></i>
+                <h2 class="text-lg font-black text-rose-500">免責事項（必ずお読みください）</h2>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto text-xs text-gray-600 dark:text-slate-300 leading-relaxed mb-6 bg-gray-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-850 hide-scrollbar space-y-3">
+                <p class="font-bold">本アプリは、ユーザー自身が入力した数値を元に計算を行う「ポートフォリオ・シミュレーター（メモツール）」であり、実際のブロックチェーンや外部ウォレットと直接連携するものではありません。</p>
+                <p>アプリ内で表示される各アセットの価格や損益は、外部APIを利用した参考値であり、市場の正確な取引価格やリアルタイムの流動性を完全に保証するものではありません。</p>
+                <p>ブラウザのデータ消去や不具合によるデータ消失、または本アプリが表示した情報に基づいて行われた投資判断によって生じた直接的・間接的な損失について、開発者および提供者は一切の責任を負いません。</p>
+                <p class="font-bold text-rose-400">必ずご自身で定期的な「暗号化バックアップ（データ保存）」を行い、安全な場所に保存していただくようお願いいたします。</p>
+            </div>
+            
+            <button onclick="agreeDisclaimer()" class="bg-gradient-to-r from-rose-500 to-indigo-600 hover:from-rose-600 hover:to-indigo-700 text-white font-bold py-3.5 rounded-2xl text-xs transition duration-300 shadow-lg shadow-indigo-500/20">
+                上記の内容に同意して進む
+            </button>
+        </div>
+    </div>
+
+    <!-- トースト通知システム -->
+    <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-[200] bg-slate-900 dark:bg-indigo-950 text-white px-5 py-3 rounded-2xl shadow-2xl border border-indigo-500/30 flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-300 text-sm font-semibold">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage">完了しました</span>
+    </div>
+
+    <!-- パスコードロック画面 -->
+    <div id="lockScreen" class="fixed inset-0 bg-white dark:bg-slate-950 z-[100] flex flex-col items-center justify-center transition-opacity duration-500 hidden">
+        <div class="text-center mb-8">
+            <i class="fa-solid fa-shield-halved text-5xl text-indigo-500 mb-4 animate-pulse"></i>
+            <h2 class="text-2xl font-bold mb-2">安全なアクセス</h2>
+            <p class="text-xs text-gray-500 dark:text-slate-400" id="lockMessage">パスコードを入力してポートフォリオをロック解除します</p>
+        </div>
+        
+        <div class="flex gap-4 mb-12 h-4" id="pinIndicators">
+            <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-slate-700 transition-colors"></div>
+            <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-slate-700 transition-colors"></div>
+            <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-slate-700 transition-colors"></div>
+            <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-slate-700 transition-colors"></div>
+            <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-slate-700 transition-colors"></div>
+            <div class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-slate-700 transition-colors"></div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6 w-full max-w-xs px-6">
+            <button onclick="inputPin('1')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">1</button>
+            <button onclick="inputPin('2')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">2</button>
+            <button onclick="inputPin('3')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">3</button>
+            <button onclick="inputPin('4')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">4</button>
+            <button onclick="inputPin('5')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">5</button>
+            <button onclick="inputPin('6')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">6</button>
+            <button onclick="inputPin('7')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">7</button>
+            <button onclick="inputPin('8')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">8</button>
+            <button onclick="inputPin('9')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">9</button>
+            <div></div>
+            <button onclick="inputPin('0')" class="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-900 text-2xl font-bold flex items-center justify-center hover:bg-gray-200 dark:hover:bg-slate-800 transition active:scale-90 mx-auto">0</button>
+            <button onclick="deletePin()" class="w-16 h-16 rounded-full text-xl flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white transition active:scale-90 mx-auto"><i class="fa-solid fa-delete-left"></i></button>
+        </div>
+    </div>
+
+    <!-- アプリメインコンテンツコンテナ -->
+    <div class="max-w-md mx-auto h-full relative" id="mainAppContent">
+        
+        <!-- =====================================
+             VIEW: HOME (ポートフォリオダッシュボード)
+        ====================================== -->
+        <div id="view-home" class="view-section px-4 pt-6">
+            <header class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden border-2 border-indigo-500 shadow-sm" id="headerProfileImgWrapper">
+                        <i class="fa-solid fa-user text-indigo-400" id="headerProfilePlaceholder"></i>
+                        <img src="" id="headerProfileImg" class="w-full h-full object-cover hidden">
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                            Portfolio Pro V12
+                        </h1>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="togglePrivacy()" id="btnPrivacy" class="w-10 h-10 rounded-full border border-gray-200 dark:border-slate-800 shadow-sm hover:bg-gray-100 dark:hover:bg-slate-800 transition flex items-center justify-center text-gray-500 dark:text-slate-400">
+                        <i class="fa-solid fa-eye" id="privacyIcon"></i>
+                    </button>
+                    <button onclick="refreshData()" class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full shadow-lg shadow-indigo-500/20 transition font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-rotate"></i> 更新
+                    </button>
+                </div>
+            </header>
+
+            <!-- 確定実資産メイン ダッシュボード (確定と見込みの完全分離) -->
+            <div class="mb-6 mt-2 bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-200/10 p-5 rounded-3xl shadow-xl relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-[11px] text-indigo-300 uppercase tracking-wider mb-1 font-black text-center">確定済みの実保有資産総額</p>
+                    <p class="text-4xl font-black tracking-tight text-white text-center transition-all duration-300" id="totalValueMain">$0.00</p>
+                    
+                    <div class="mt-4 pt-4 border-t border-slate-800/80 flex flex-col items-center justify-center gap-2">
+                        <!-- 実投資元本 -->
+                        <p class="text-xs font-bold text-slate-400">
+                            投資元本: <span id="totalInvestedMain" class="text-slate-200">$0.00</span>
+                        </p>
+                        <!-- 実資産のリアル損益 -->
+                        <p id="totalPnl" class="text-xs font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full shadow-sm">
+                            +$0.00 (0.00%)
+                        </p>
+                    </div>
+
+                    <!-- 見込みエアドロ期待価値表示エリア -->
+                    <div class="mt-4 pt-3.5 border-t border-slate-800/80 flex flex-col items-center gap-2">
+                        <div class="flex items-center gap-1.5 text-xs font-bold text-slate-300">
+                            <span class="inline-block w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                            <span>見込みエアドロ期待価値:</span>
+                            <span id="estimatedAirdropValue" class="text-purple-300 font-extrabold">$0.00</span>
+                        </div>
+
+                        <!-- 合算資産トグルスイッチ -->
+                        <div class="flex items-center gap-3 mt-2 bg-slate-950/80 px-4 py-2 rounded-2xl border border-slate-800">
+                            <span class="text-[10px] font-black text-slate-400">合算参考総資産を表示</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggleCombinedSum" onchange="toggleCombinedSumView()" class="sr-only peer">
+                                <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 peer-checked:after:bg-white"></div>
+                            </label>
+                        </div>
+
+                        <!-- 動的に表示される合算参考総資産額 -->
+                        <div id="combinedSumWrapper" class="w-full text-center mt-2 hidden transition-all duration-300">
+                            <p class="text-[10px] text-slate-500 font-black uppercase">【参考】実資産 + 見込み合算総額</p>
+                            <p id="combinedSumValue" class="text-xl font-black text-indigo-400">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 演出用背景ぼかし -->
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
+                <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl"></div>
+            </div>
+
+            <!-- 目標進捗バー -->
+            <div class="mb-6 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-100 dark:border-slate-800">
+                <div class="flex justify-between text-xs font-bold text-gray-500 dark:text-slate-400 mb-2">
+                    <span><i class="fa-solid fa-bullseye mr-1 text-indigo-500"></i>目標額: <span id="goalText" class="text-indigo-400">$0.00</span></span>
+                    <span id="goalPct" class="text-indigo-400 font-bold">0%</span>
+                </div>
+                <div class="w-full bg-gray-100 dark:bg-slate-800 rounded-full h-3 shadow-inner overflow-hidden">
+                    <div id="goalBar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- チャートセクション -->
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-100 dark:border-slate-800/80 mb-6 shadow-sm">
+                <div class="flex justify-center mb-4 bg-gray-50 dark:bg-slate-950 p-1 rounded-xl border border-gray-100 dark:border-slate-800">
+                    <button id="btnChartAsset" onclick="setChartSource('assets')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition bg-white dark:bg-slate-800 text-indigo-500 shadow-sm">
+                        資産アセット比
+                    </button>
+                    <button id="btnChartProject" onclick="setChartSource('projects')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition text-gray-400 dark:text-slate-400">
+                        プロジェクト比
+                    </button>
+                </div>
+                <div class="w-full h-48 flex items-center justify-center">
+                    <canvas id="portfolioChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 資産トップ3 -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-3 px-1">
+                    <h2 class="text-base font-black flex items-center gap-1.5"><i class="fa-solid fa-crown text-amber-500"></i>資産トップ3</h2>
+                    <button onclick="switchView('assets')" class="text-xs text-indigo-400 font-bold hover:underline">すべて見る <i class="fa-solid fa-angle-right"></i></button>
+                </div>
+                <div id="topAssetsList" class="flex flex-col gap-2">
+                    <!-- JSで挿入 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================================
+             VIEW: PROJECTS (プロジェクト・エアドロ別損益)
+        ====================================== -->
+        <div id="view-projects" class="view-section px-4 pt-6 hidden">
+            <header class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-xl font-black">プロジェクト別損益</h1>
+                    <p class="text-xs text-gray-500 dark:text-slate-400">参加中のWeb3 PJやAirdrop情報を一元化</p>
+                </div>
+                <button onclick="openProjectModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-indigo-500/10">
+                    <i class="fa-solid fa-plus"></i> PJ追加
+                </button>
+            </header>
+
+            <!-- プロジェクト一覧 -->
+            <div id="projectList" class="grid grid-cols-1 gap-4">
+                <!-- JSでカードを動的配置 -->
+            </div>
+        </div>
+
+        <!-- =====================================
+             VIEW: ACCOUNTS (ウォレット & タスク別 プロファイル管理)
+        ====================================== -->
+        <div id="view-accounts" class="view-section px-4 pt-6 hidden">
+            <header class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-lg font-black">ウォレット & タスク別プロファイル</h1>
+                    <p class="text-xs text-gray-500 dark:text-slate-400">各環境情報の安全な整理</p>
+                </div>
+                <button onclick="openAccountModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-indigo-500/10">
+                    <i class="fa-solid fa-plus"></i> プロファイル追加
+                </button>
+            </header>
+
+            <!-- プロファイル一覧 -->
+            <div id="accountList" class="flex flex-col gap-4">
+                <!-- JSでアカウント情報カードを動的配置 -->
+            </div>
+        </div>
+
+        <!-- =====================================
+             VIEW: ASSETS (アセット管理)
+        ====================================== -->
+        <div id="view-assets" class="view-section px-4 pt-6 hidden">
+            <header class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-xl font-black">マイアセット</h1>
+                    <p class="text-xs text-gray-500 dark:text-slate-400">保有トークン・NFTの一覧管理</p>
+                </div>
+                <button onclick="openAddAssetModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-indigo-500/10">
+                    <i class="fa-solid fa-plus"></i> 資産追加
+                </button>
+            </header>
+
+            <div id="allAssetsList" class="flex flex-col gap-3">
+                <!-- JSで資産アイテムをリスト -->
+            </div>
+        </div>
+
+        <!-- =====================================
+             VIEW: SETTINGS (各種設定)
+        ====================================== -->
+        <div id="view-settings" class="view-section px-4 pt-6 hidden">
+            <header class="mb-6">
+                <h1 class="text-xl font-black">環境設定・管理</h1>
+                <p class="text-xs text-gray-500 dark:text-slate-400">アプリ動作やAPIキー、アプリアイコン、データバックアップ</p>
+            </header>
+
+            <div class="flex flex-col gap-4">
+                <!-- Gemini API設定 -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
+                    <h3 class="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-1.5">
+                        <i class="fa-solid fa-robot"></i> AIリサーチャー設定 (Gemini API)
+                    </h3>
+                    <p class="text-xs text-gray-400 dark:text-slate-400 mb-3 leading-relaxed">
+                        プロジェクト詳細画面からAIリサーチを使用するために、ご自身のGemini APIキーを入力して保存してください。
+                    </p>
+                    <div class="flex gap-2 mb-3">
+                        <input type="password" id="geminiApiKey" placeholder="AI-zaSy..." class="flex-1 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white">
+                        <button onclick="saveApiKey()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-xl font-bold transition">
+                            保存
+                        </button>
+                    </div>
+                    <!-- 初心者向けサポートリンク & 1分ガイド -->
+                    <div class="flex flex-col gap-2 pt-2 border-t border-slate-850/80 text-xs">
+                        <a href="https://aistudio.google.com/" target="_blank" class="text-indigo-400 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> 👉 無料の API キー取得はこちら(Google AI Studio)
+                        </a>
+                        <button onclick="openApiGuideModal()" class="text-left text-emerald-400 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-circle-question"></i> 👉 取得方法の簡単 1 分 ガイドを読む
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 📱 アプリアイコンの状態表示 -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
+                    <h3 class="text-sm font-bold text-indigo-400 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-mobile-screen-button"></i> ホーム画面アイコンのステータス
+                    </h3>
+                    <div class="flex items-center gap-4 mt-3">
+                        <div class="w-16 h-16 rounded-2xl bg-slate-950 flex items-center justify-center overflow-hidden border border-slate-800 relative shadow-inner">
+                            <img src="./icon-512.jpg" class="w-full h-full object-cover" onerror="this.src='./icon-512.png'">
+                        </div>
+                        <div class="flex-1 text-xs text-gray-400 leading-relaxed">
+                            <p class="font-bold text-white mb-1"><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i>高解像度アイコン設定済</p>
+                            <p class="text-[11px]">iPhone/Androidのホーム画面追加用アイコンとして『icon-512.jpg』が正しくシステムヘッダーに配置されています。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- プロファイル設定 -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
+                    <h3 class="text-sm font-bold text-indigo-400 mb-3"><i class="fa-solid fa-id-card mr-1.5"></i>プロファイル設定</h3>
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center border border-slate-700 relative">
+                            <i id="settingsProfilePlaceholder" class="fa-solid fa-user text-slate-500 text-xl"></i>
+                            <img id="settingsProfileImg" class="w-full h-full object-cover hidden">
+                        </div>
+                        <div class="flex-1">
+                            <input type="text" id="profileImgUrl" placeholder="画像のURLを入力" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3 py-2 text-xs focus:outline-none mb-2">
+                            <button onclick="saveProfileImage()" class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 text-xs px-3 py-1.5 rounded-lg font-bold transition">更新する</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- パスコード設定 -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-sm font-bold"><i class="fa-solid fa-key mr-1.5"></i>セキュリティ (パスコード)</h3>
+                        <p class="text-xs text-gray-500 dark:text-slate-400">アプリ起動時にロックを要求します</p>
+                    </div>
+                    <button id="btnPinSetting" onclick="openPinSettingModal()" class="bg-slate-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                        設定する
+                    </button>
+                </div>
+
+                <!-- 目標額 -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
+                    <h3 class="text-sm font-bold mb-2"><i class="fa-solid fa-bullseye mr-1.5"></i>目標資産額の設定</h3>
+                    <div class="flex gap-2">
+                        <span class="bg-gray-100 dark:bg-slate-800 px-3 py-2 rounded-xl text-sm font-bold">$</span>
+                        <input type="number" id="goalAmountInput" placeholder="100000" class="flex-1 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3 py-2 text-xs focus:outline-none text-white">
+                        <button onclick="saveGoalAmount()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-xl font-bold transition">変更</button>
+                    </div>
+                </div>
+
+                <!-- モードと表示通貨 -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800 grid grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-400 mb-2 uppercase">外観テーマ</h3>
+                        <div class="flex gap-1 bg-gray-50 dark:bg-slate-950 p-1 rounded-xl border border-gray-100 dark:border-slate-850">
+                            <button id="btnThemeLight" onclick="setTheme('light')" class="flex-1 py-1 text-xs font-bold rounded-lg transition text-slate-400">ライト</button>
+                            <button id="btnThemeDark" onclick="setTheme('dark')" class="flex-1 py-1 text-xs font-bold rounded-lg transition bg-indigo-600 text-white">ダーク</button>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-400 mb-2 uppercase">基軸通貨表示</h3>
+                        <div class="flex gap-1 bg-gray-50 dark:bg-slate-950 p-1 rounded-xl border border-gray-100 dark:border-slate-850">
+                            <button id="btnCurrencyUSD" onclick="setThemeCurrency('USD')" class="flex-1 py-1 text-xs font-bold rounded-lg transition bg-indigo-600 text-white">USD ($)</button>
+                            <button id="btnCurrencyJPY" onclick="setThemeCurrency('JPY')" class="flex-1 py-1 text-xs font-bold rounded-lg transition text-slate-400">JPY (¥)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- バックアップ・復元 -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
+                    <h3 class="text-sm font-bold mb-3"><i class="fa-solid fa-database mr-1.5"></i>暗号化バックアップと復元</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="openBackupCryptoModal('encrypt')" class="bg-emerald-600/15 hover:bg-emerald-600/20 text-emerald-400 py-3.5 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1.5 border border-emerald-500/20">
+                            <i class="fa-solid fa-file-shield text-lg animate-pulse"></i>
+                            暗号化して保存
+                        </button>
+                        <button onclick="triggerRestore()" class="bg-indigo-600/15 hover:bg-indigo-600/20 text-indigo-400 py-3.5 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1.5 border border-indigo-500/20">
+                            <i class="fa-solid fa-key text-lg"></i>
+                            暗号を解いて復元
+                        </button>
+                        <input type="file" id="restoreFile" class="hidden" onchange="handleRestoreFile(event)" accept=".json">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================================
+             FOOTER: TAB BAR NAVIGATION (ナビバー)
+        ====================================== -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 border-t border-gray-100 dark:border-slate-850/80 z-50 nav-pb shadow-xl backdrop-blur-md">
+            <div class="max-w-md mx-auto flex justify-around items-center h-16">
+                <button onclick="switchView('home')" id="nav-home" class="flex-1 flex flex-col items-center justify-center text-indigo-500 gap-1 transition">
+                    <i class="fa-solid fa-chart-line text-lg"></i>
+                    <span class="text-[10px] font-bold">ホーム</span>
+                </button>
+                <button onclick="switchView('projects')" id="nav-projects" class="flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-slate-500 gap-1 transition">
+                    <i class="fa-solid fa-folder text-lg"></i>
+                    <span class="text-[10px] font-bold">プロジェクト</span>
+                </button>
+                <button onclick="switchView('accounts')" id="nav-accounts" class="flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-slate-500 gap-1 transition">
+                    <i class="fa-solid fa-users text-lg"></i>
+                    <span class="text-[10px] font-bold">プロファイル</span>
+                </button>
+                <button onclick="switchView('assets')" id="nav-assets" class="flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-slate-500 gap-1 transition">
+                    <i class="fa-solid fa-coins text-lg"></i>
+                    <span class="text-[10px] font-bold">アセット</span>
+                </button>
+                <button onclick="switchView('settings')" id="nav-settings" class="flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-slate-500 gap-1 transition">
+                    <i class="fa-solid fa-sliders text-lg"></i>
+                    <span class="text-[10px] font-bold">設定</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- =====================================
+             MODALS SECTION (各種入力・詳細モーダル)
+        ====================================== -->
+        
+        <!-- モーダル1: アセット追加/編集 -->
+        <div id="assetModal" class="fixed inset-0 z-[110] flex items-center justify-center glass-modal hidden">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative">
+                <button onclick="closeModal('assetModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h3 id="assetModalTitle" class="text-lg font-black mb-4 flex items-center gap-1.5"><i class="fa-solid fa-coins text-indigo-500"></i>新規資産の追加</h3>
+                
+                <div class="flex flex-col gap-3.5 max-h-[70vh] overflow-y-auto pr-1">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1">銘柄名/プロジェクト名 *</label>
+                        <input type="text" id="assetName" placeholder="Ethereum, Monadなど" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none text-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">チェーン</label>
+                            <select id="assetChain" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none text-white">
+                                <option value="ETH">Ethereum</option>
+                                <option value="SOL">Solana</option>
+                                <option value="BSC">BNB Chain</option>
+                                <option value="POL">Polygon</option>
+                                <option value="MON">Monad</option>
+                                <option value="LINEA">Linea</option>
+                                <option value="OTHER">その他</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">ウォレット</label>
+                            <input type="text" id="assetWallet" placeholder="Metamask等" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none text-white">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">保有数量 *</label>
+                            <input type="number" step="any" id="assetQty" placeholder="1.2" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">平均購入単価 ($) *</label>
+                            <input type="number" step="any" id="assetBuyPrice" placeholder="2500" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none text-white">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1">現在単価 ($)</label>
+                        <input type="number" step="any" id="assetCurrentPrice" placeholder="空欄で自動更新可能" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none text-white">
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex gap-2">
+                    <button id="btnDeleteAsset" onclick="deleteAssetAction()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs py-3 rounded-2xl flex-1 font-bold transition border border-rose-500/20 hidden">
+                        削除
+                    </button>
+                    <button onclick="saveAssetAction()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-3 rounded-2xl flex-[2] font-bold transition shadow-lg shadow-indigo-500/20">
+                        完了して保存
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- モーダル2: プロジェクト追加/編集 -->
+        <div id="projectModal" class="fixed inset-0 z-[110] flex items-center justify-center glass-modal hidden">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative">
+                <button onclick="closeModal('projectModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h3 id="projectModalTitle" class="text-lg font-black mb-4 flex items-center gap-1.5"><i class="fa-solid fa-folder text-indigo-500"></i>プロジェクトの追加</h3>
+                
+                <div class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-1">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1">プロジェクト名 *</label>
+                        <input type="text" id="projName" placeholder="例: Monad, Linea, Berachain" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">見込みエアドロ期待価値 ($) *</label>
+                            <input type="number" step="any" id="projCurrent" placeholder="1200" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">実投資原資（コスト） ($) *</label>
+                            <input type="number" step="any" id="projInvested" placeholder="500" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">公式 X リンク</label>
+                            <input type="text" id="projX" placeholder="https://x.com/..." class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">公式 Discord</label>
+                            <input type="text" id="projDiscord" placeholder="https://discord.gg/..." class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">公式サイト URL</label>
+                            <input type="text" id="projWeb" placeholder="https://..." class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">DeBank / Dune リンク</label>
+                            <input type="text" id="projDebank" placeholder="https://debank.com/..." class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1">メモ / 現在のタスク状況</label>
+                        <textarea id="projNotes" rows="2" placeholder="例: テストネット完了、メインネットファーム継続中。NFT保有中。" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white resize-none"></textarea>
+                    </div>
+                </div>
+                
+                <div class="mt-5 flex gap-2">
+                    <button id="btnDeleteProj" onclick="deleteProjAction()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs py-3 rounded-2xl flex-1 font-bold transition border border-rose-500/20 hidden">
+                        削除
+                    </button>
+                    <button onclick="saveProjAction()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-3 rounded-2xl flex-[2] font-bold transition shadow-lg shadow-indigo-500/20">
+                        プロジェクト保存
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- モーダル3: プロファイル追加/編集 -->
+        <div id="accountModal" class="fixed inset-0 z-[110] flex items-center justify-center glass-modal hidden">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative">
+                <button onclick="closeModal('accountModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h3 id="accountModalTitle" class="text-lg font-black mb-4 flex items-center gap-1.5"><i class="fa-solid fa-user-plus text-indigo-500"></i>プロファイルの追加</h3>
+                
+                <div class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-1">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1">プロファイル名/環境ID *</label>
+                        <input type="text" id="accName" placeholder="例: TAKA_Profile_01" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">ブラウザID</label>
+                            <input type="text" id="accBrowser" placeholder="例: AdsPower_01" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">プロキシ IP / Proxy</label>
+                            <input type="text" id="accProxy" placeholder="192.168.1.1:8000" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1">代表ウォレットアドレス</label>
+                        <input type="text" id="accWallet" placeholder="0x..." class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">紐付け X (Twitter)</label>
+                            <input type="text" id="accX" placeholder="@taka_crypto" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">紐付け Discord</label>
+                            <input type="text" id="accDiscord" placeholder="taka#1234" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-5 flex gap-2">
+                    <button id="btnDeleteAcc" onclick="deleteAccAction()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs py-3 rounded-2xl flex-1 font-bold transition border border-rose-500/20 hidden">
+                        削除
+                    </button>
+                    <button onclick="saveAccAction()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-3 rounded-2xl flex-[2] font-bold transition shadow-lg shadow-indigo-500/20">
+                        プロファイル保存
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- モーダル4: パスコード初期設定/変更 -->
+        <div id="pinSettingModal" class="fixed inset-0 z-[110] flex items-center justify-center glass-modal hidden">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative">
+                <button onclick="closeModal('pinSettingModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-lg font-black mb-3"><i class="fa-solid fa-key text-indigo-500 mr-1"></i>PINコードの設定</h3>
+                <p class="text-xs text-gray-500 dark:text-slate-400 mb-4">6桁の数字を入力してください。空欄のまま保存するとPINロックを解除できます。</p>
+                
+                <div class="flex flex-col gap-3">
+                    <input type="password" id="newPinInput" maxlength="6" placeholder="新規PINを入力 (6桁数字)" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-4 py-2.5 text-center text-lg font-bold focus:outline-none tracking-widest text-white">
+                </div>
+                
+                <div class="mt-5">
+                    <button onclick="savePinAction()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-3.5 rounded-2xl w-full font-bold transition shadow-lg shadow-indigo-500/20">
+                        PIN設定を確定
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- モーダル5: AI Web3 リサーチャー画面 -->
+        <div id="aiResearchModal" class="fixed inset-0 z-[120] flex items-center justify-center glass-modal hidden">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative flex flex-col max-h-[85vh]">
+                <button onclick="closeModal('aiResearchModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg z-10"><i class="fa-solid fa-xmark"></i></button>
+                
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-9 h-9 rounded-full bg-indigo-600/20 flex items-center justify-center text-indigo-400">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 id="researchProjectName" class="text-base font-black">AIリサーチ結果</h3>
+                        <p class="text-[10px] text-gray-400 dark:text-indigo-400 font-bold">Powered by Gemini & Search Grounding</p>
+                    </div>
+                </div>
+
+                <div id="researchContent" class="flex-1 overflow-y-auto text-sm leading-relaxed text-slate-200 hide-scrollbar bg-gray-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-850">
+                    <!-- AIの結果が Markdown or HTML で差し込まれます -->
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-800/80 flex gap-2">
+                    <button onclick="copyResearchResult()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white text-xs py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-1.5 border border-slate-700">
+                        <i class="fa-solid fa-copy"></i> 結果をコピー
+                    </button>
+                    <button onclick="closeModal('aiResearchModal')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-2.5 rounded-xl font-bold transition">
+                        閉じる
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- モーダル6: 暗号化パスワード入力用 (AESキー) -->
+        <div id="backupCryptoModal" class="fixed inset-0 z-[130] flex items-center justify-center glass-modal hidden">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative">
+                <button onclick="closeModal('backupCryptoModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h3 id="backupCryptoTitle" class="text-lg font-black mb-3 text-indigo-500"></h3>
+                <p id="backupCryptoDesc" class="text-xs text-gray-400 dark:text-slate-400 mb-4 leading-relaxed"></p>
+                
+                <div class="flex flex-col gap-3">
+                    <input type="password" id="cryptoPasswordInput" placeholder="セキュリティキー / パスワード" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-4 py-2.5 text-center text-sm font-bold focus:outline-none text-white tracking-widest">
+                </div>
+                
+                <div class="mt-5">
+                    <button id="btnCryptoSubmit" onclick="submitCryptoAction()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-3.5 rounded-2xl w-full font-bold transition shadow-lg shadow-indigo-500/20">
+                        実行
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新機能モーダル7: 🔑 Gemini API取得方法 1分簡単ガイド -->
+        <div id="apiGuideModal" class="fixed inset-0 z-[140] flex items-center justify-center glass-modal hidden">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative flex flex-col max-h-[85vh]">
+                <button onclick="closeModal('apiGuideModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg z-10"><i class="fa-solid fa-xmark"></i></button>
+                
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-9 h-9 rounded-full bg-indigo-600/20 flex items-center justify-center text-indigo-400">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black">APIキー 1分取得ガイド</h3>
+                        <p class="text-[10px] text-gray-400 dark:text-emerald-400 font-bold">完全無料で今すぐ取得できます</p>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto text-xs leading-relaxed text-slate-200 hide-scrollbar bg-gray-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-850 space-y-4">
+                    <div class="border-l-2 border-indigo-500 pl-2">
+                        <p class="font-bold text-white text-xs mb-1">🎁 費用は完全無料ですか？</p>
+                        <p class="text-[11px] text-gray-400">はい！Google AI Studioで作成する個人用のAPIキーは完全に無料です。有料登録なども不要ですのでご安心ください。</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <p class="font-bold text-indigo-300">🔑 取得の3ステップ</p>
+                        
+                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800/80">
+                            <span class="bg-indigo-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Step 1</span>
+                            <p class="mt-1.5 font-bold text-white">Google AI Studioにアクセス</p>
+                            <p class="text-[10px] text-gray-400 mt-1">「無料のAPIキー取得はこちら」のリンクをクリックしてGoogleアカウントでログインします。</p>
+                        </div>
+
+                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800/80">
+                            <span class="bg-indigo-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Step 2</span>
+                            <p class="mt-1.5 font-bold text-white">「Get API Key」をクリック</p>
+                            <p class="text-[10px] text-gray-400 mt-1">画面上部の青い「Get API Key」ボタンを押し、規約に同意して「Create API Key」を選択します。</p>
+                        </div>
+
+                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800/80">
+                            <span class="bg-indigo-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Step 3</span>
+                            <p class="mt-1.5 font-bold text-white">キーをコピーしてアプリに貼る</p>
+                            <p class="text-[10px] text-gray-400 mt-1">「AI-zaSy...」から始まる文字をコピーし、設定画面の入力欄に貼り付けて「保存」します。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-800/80">
+                    <button onclick="closeModal('apiGuideModal')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs py-3 rounded-xl font-bold transition">
+                        分かりました！
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- =====================================
+         JAVASCRIPT CODE (アプリ本体のロジック)
+    ====================================== -->
+    <script>
+        // アプリケーションステート管理
+        let state = {
+            pinInput: "",
+            savedPin: localStorage.getItem("savedPin") || "",
+            isLocked: false,
+            privacyMode: localStorage.getItem("privacyMode") === "true",
+            displayCurrency: localStorage.getItem("displayCurrency") || "USD",
+            fxRate: 155,
+            theme: localStorage.getItem("theme") || "dark",
+            goalAmount: parseFloat(localStorage.getItem("goalAmount")) || 100000,
+            profileImg: localStorage.getItem("profileImg") || "",
+            apiKey: localStorage.getItem("gemini_apiKey") || "",
+            activeChartSource: 'assets',
+            showCombinedSum: localStorage.getItem("showCombinedSum") === "true",
+            disclaimerAgreed: localStorage.getItem("disclaimerAgreed") === "true",
+            
+            // コアデータ
+            assets: JSON.parse(localStorage.getItem("assets")) || [],
+            projects: JSON.parse(localStorage.getItem("projects")) || [
+                { id: "p1", name: "Monad", invested: 500, current: 1500, xLink: "https://x.com/monad_xyz", discordLink: "https://discord.gg/monad", webLink: "https://monad.xyz", debankLink: "", notes: "Testnet phase 1完了。主要NFTをウォレットに確保済み。Monad NFTをミント予定。" },
+                { id: "p2", name: "Linea", invested: 800, current: 650, xLink: "https://x.com/LineaBuild", discordLink: "https://discord.gg/linea", webLink: "https://linea.build", debankLink: "https://debank.com", notes: "LXP収集完了。メインネットでLPを継続提供中。" }
+            ],
+            accounts: JSON.parse(localStorage.getItem("accounts")) || [
+                { id: "a1", name: "TAKA_Main_01", browserId: "AdsPower_01", proxyIp: "125.41.112.98:4000", wallet: "0x71C2B2456453A81aA4B4B1842884A47816A54321", xAccount: "@taka_crypto_01", discordAccount: "taka_web3#0001" },
+                { id: "a2", name: "TAKA_Sub_02", browserId: "AdsPower_02", proxyIp: "125.41.112.99:4000", wallet: "0x98A1B2456453A81aA4B4B1842884A47816A99999", xAccount: "@taka_farm_02", discordAccount: "taka_farm#0002" }
+            ],
+            
+            editingAssetId: null,
+            editingProjectId: null,
+            editingAccountId: null
+        };
+
+        let cryptoMode = "";
+        let pendingRestoreData = "";
+        let visibleFields = {};
+        let portfolioChartInstance = null;
+
+        // 初期化処理
+        window.onload = function() {
+            setTheme(state.theme);
+            
+            document.getElementById('geminiApiKey').value = state.apiKey;
+            document.getElementById('goalAmountInput').value = state.goalAmount;
+            document.getElementById('profileImgUrl').value = state.profileImg;
+            document.getElementById('toggleCombinedSum').checked = state.showCombinedSum;
+            
+            updateProfileUI();
+
+            // 免責同意有無のチェック（最優先）
+            if (!state.disclaimerAgreed) {
+                document.getElementById('disclaimerModal').classList.remove('hidden');
+                document.getElementById('mainAppContent').classList.add('blur-sm');
+            } else if (state.savedPin && state.savedPin.length === 6) {
+                // PINロック状態に移行
+                state.isLocked = true;
+                document.getElementById('lockScreen').classList.remove('hidden');
+                document.getElementById('mainAppContent').classList.add('blur-sm');
+                updatePinIndicators();
+            } else {
+                initAppDashboard();
+            }
+        };
+
+        // 免責同意
+        function agreeDisclaimer() {
+            state.disclaimerAgreed = true;
+            localStorage.setItem("disclaimerAgreed", "true");
+            document.getElementById('disclaimerModal').classList.add('hidden');
+            
+            // 同意後にロックチェック
+            if (state.savedPin && state.savedPin.length === 6) {
+                state.isLocked = true;
+                document.getElementById('lockScreen').classList.remove('hidden');
+                updatePinIndicators();
+            } else {
+                document.getElementById('mainAppContent').classList.remove('blur-sm');
+                initAppDashboard();
+            }
+        }
+
+        function initAppDashboard() {
+            renderDashboard();
+            renderProjects();
+            renderAccounts();
+            renderAssets();
+            updateLockSettingButton();
+        }
+
+        // =====================================
+        // セキュリティ (パスコード)
+        // =====================================
+        function updatePinIndicators() {
+            const divs = document.querySelectorAll('#pinIndicators div');
+            divs.forEach((div, i) => {
+                if (i < state.pinInput.length) {
+                    div.className = "w-3.5 h-3.5 rounded-full bg-indigo-500 border-2 border-indigo-500 transition-colors shadow-sm";
+                } else {
+                    div.className = "w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-slate-700 transition-colors";
+                }
+            });
+        }
+
+        function inputPin(num) {
+            if (state.pinInput.length < 6) {
+                state.pinInput += num;
+                updatePinIndicators();
+            }
+            if (state.pinInput.length === 6) {
+                setTimeout(checkPin, 150);
+            }
+        }
+
+        function deletePin() {
+            if (state.pinInput.length > 0) {
+                state.pinInput = state.pinInput.slice(0, -1);
+                updatePinIndicators();
+            }
+        }
+
+        function checkPin() {
+            if (state.pinInput === state.savedPin) {
+                state.isLocked = false;
+                document.getElementById('lockScreen').classList.add('opacity-0');
+                document.getElementById('mainAppContent').classList.remove('blur-sm');
+                setTimeout(() => {
+                    document.getElementById('lockScreen').classList.add('hidden');
+                    document.getElementById('lockScreen').classList.remove('opacity-0');
+                    showToast("ロックを解除しました");
+                }, 500);
+                initAppDashboard();
+            } else {
+                state.pinInput = "";
+                updatePinIndicators();
+                const lockContainer = document.getElementById('lockScreen');
+                lockContainer.classList.add('shake-anim');
+                document.getElementById('lockMessage').textContent = "PINコードが一致しません！";
+                document.getElementById('lockMessage').classList.add('text-rose-500');
+                
+                setTimeout(() => {
+                    lockContainer.classList.remove('shake-anim');
+                }, 300);
+            }
+        }
+
+        // =====================================
+        // グローバルUI切り替え
+        // =====================================
+        function switchView(viewName) {
+            if (state.isLocked) return;
+            
+            document.querySelectorAll('.view-section').forEach(view => view.classList.add('hidden'));
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('text-indigo-500');
+                btn.classList.add('text-gray-400', 'dark:text-slate-500');
+            });
+            document.getElementById(`nav-${viewName}`).classList.add('text-indigo-500');
+            document.getElementById(`nav-${viewName}`).classList.remove('text-gray-400', 'dark:text-slate-500');
+            
+            if (viewName === 'home') {
+                renderDashboard();
+            } else if (viewName === 'accounts') {
+                renderAccounts();
+            }
+        }
+
+        // =====================================
+        // トースト通知 & クリップボード
+        // =====================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        function copyToClipboard(text, message = "コピーしました！") {
+            const input = document.createElement('textarea');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            showToast(message);
+        }
+
+        // 👁 マスキングトグル制御 (プロファイル用)
+        function toggleFieldVisibility(fieldId, rawValue) {
+            const el = document.getElementById(fieldId);
+            const icon = document.getElementById('eye-' + fieldId);
+            
+            if (!visibleFields[fieldId]) {
+                visibleFields[fieldId] = true;
+                el.textContent = rawValue;
+                el.classList.remove('blur-text');
+                icon.className = "fa-solid fa-eye text-indigo-400";
+            } else {
+                visibleFields[fieldId] = false;
+                el.textContent = "••••••••••••";
+                icon.className = "fa-solid fa-eye-slash text-slate-500";
+            }
+        }
+
+        // =====================================
+        // データ同期＆再計算 (P&L分離コアロジック)
+        // =====================================
+        function calculateTotals() {
+            let totalValue = 0; // 確定実保有資産
+            let totalInvested = 0; // 確定アセットの投資元本
+            let estimatedAirdrop = 0; // プロジェクトの見込みエアドロ期待額
+
+            // 保有資産の集計
+            state.assets.forEach(asset => {
+                const qty = parseFloat(asset.quantity) || 0;
+                const currentPrice = parseFloat(asset.currentPrice) || 0;
+                const buyPrice = parseFloat(asset.buyPrice) || 0;
+                totalValue += qty * currentPrice;
+                totalInvested += qty * buyPrice;
+            });
+
+            // プロジェクト（エアドロ期待期待値）の集計
+            state.projects.forEach(proj => {
+                estimatedAirdrop += parseFloat(proj.current) || 0;
+            });
+
+            return { totalValue, totalInvested, estimatedAirdrop };
+        }
+
+        // 合算スイッチトグル処理
+        function toggleCombinedSumView() {
+            const isChecked = document.getElementById('toggleCombinedSum').checked;
+            state.showCombinedSum = isChecked;
+            localStorage.setItem("showCombinedSum", isChecked);
+            
+            const wrapper = document.getElementById('combinedSumWrapper');
+            if (isChecked) {
+                wrapper.classList.remove('hidden');
+                renderDashboard();
+            } else {
+                wrapper.classList.add('hidden');
+            }
+        }
+
+        function renderDashboard() {
+            const totals = calculateTotals();
+            const totalValue = totals.totalValue;
+            const totalInvested = totals.totalInvested;
+            const estimatedAirdrop = totals.estimatedAirdrop;
+
+            const symbol = state.displayCurrency === 'USD' ? '$' : '¥';
+            const rate = state.displayCurrency === 'USD' ? 1 : state.fxRate;
+            
+            // 1. メイン：確定実資産表示
+            if (state.privacyMode) {
+                document.getElementById('totalValueMain').textContent = '••••••';
+                document.getElementById('totalInvestedMain').textContent = '••••••';
+                document.getElementById('estimatedAirdropValue').textContent = '••••••';
+                document.getElementById('combinedSumValue').textContent = '••••••';
+                document.getElementById('goalText').textContent = '••••••';
+                document.getElementById('goalPct').textContent = '--%';
+                document.getElementById('goalBar').style.width = '0%';
+            } else {
+                document.getElementById('totalValueMain').textContent = symbol + (totalValue * rate).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalInvestedMain').textContent = symbol + (totalInvested * rate).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('estimatedAirdropValue').textContent = symbol + (estimatedAirdrop * rate).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+                // 2. リアルP&L
+                const diff = totalValue - totalInvested;
+                const pct = totalInvested > 0 ? (diff / totalInvested) * 100 : 0;
+                const sign = diff >= 0 ? '+' : '';
+                
+                const pnlEl = document.getElementById('totalPnl');
+                pnlEl.textContent = `${sign}${symbol}${(diff * rate).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} (${sign}${pct.toFixed(2)}%)`;
+                if (diff >= 0) {
+                    pnlEl.className = "text-xs font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full shadow-sm";
+                } else {
+                    pnlEl.className = "text-xs font-black text-rose-400 bg-rose-500/10 border border-rose-500/20 px-3 py-1 rounded-full shadow-sm";
+                }
+
+                // 3. トグルで切り替える合算参考資産額
+                const combinedSum = totalValue + estimatedAirdrop;
+                document.getElementById('combinedSumValue').textContent = symbol + (combinedSum * rate).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                
+                const wrapper = document.getElementById('combinedSumWrapper');
+                if (state.showCombinedSum) {
+                    wrapper.classList.remove('hidden');
+                } else {
+                    wrapper.classList.add('hidden');
+                }
+
+                // 目標バー
+                const target = state.goalAmount;
+                document.getElementById('goalText').textContent = symbol + (target * rate).toLocaleString();
+                const progressPct = Math.min((totalValue / target) * 100, 100);
+                document.getElementById('goalPct').textContent = progressPct.toFixed(1) + '%';
+                document.getElementById('goalBar').style.width = progressPct + '%';
+            }
+
+            renderChart(totals);
+            renderTopAssets();
+        }
+
+        // =====================================
+        // 📈 Chart.js レンダラー
+        // =====================================
+        function setChartSource(source) {
+            state.activeChartSource = source;
+            
+            const btnAsset = document.getElementById('btnChartAsset');
+            const btnProject = document.getElementById('btnChartProject');
+            
+            if (source === 'assets') {
+                btnAsset.className = "flex-1 py-1.5 rounded-lg text-xs font-bold transition bg-white dark:bg-slate-800 text-indigo-500 shadow-sm";
+                btnProject.className = "flex-1 py-1.5 rounded-lg text-xs font-bold transition text-gray-400 dark:text-slate-400";
+            } else {
+                btnProject.className = "flex-1 py-1.5 rounded-lg text-xs font-bold transition bg-white dark:bg-slate-800 text-indigo-500 shadow-sm";
+                btnAsset.className = "flex-1 py-1.5 rounded-lg text-xs font-bold transition text-gray-400 dark:text-slate-400";
+            }
+
+            renderDashboard();
+        }
+
+        function renderChart(totals) {
+            const ctx = document.getElementById('portfolioChart').getContext('2d');
+            
+            if (portfolioChartInstance) {
+                portfolioChartInstance.destroy();
+            }
+
+            let labels = [];
+            let data = [];
+            let colors = [
+                '#6366f1', '#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#14b8a6'
+            ];
+
+            if (state.activeChartSource === 'assets') {
+                if (state.assets.length === 0) {
+                    labels = ["アセットなし"];
+                    data = [1];
+                    colors = ["#475569"];
+                } else {
+                    state.assets.forEach(asset => {
+                        labels.push(asset.name);
+                        data.push((parseFloat(asset.quantity) || 0) * (parseFloat(asset.currentPrice) || 0));
+                    });
+                }
+            } else {
+                if (state.projects.length === 0) {
+                    labels = ["プロジェクトなし"];
+                    data = [1];
+                    colors = ["#475569"];
+                } else {
+                    state.projects.forEach(proj => {
+                        labels.push(proj.name);
+                        data.push(parseFloat(proj.current) || 0);
+                    });
+                }
+            }
+
+            portfolioChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#0f172a'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10, weight: 'bold' },
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        function renderTopAssets() {
+            const container = document.getElementById('topAssetsList');
+            container.innerHTML = "";
+
+            const sorted = [...state.assets].sort((a, b) => {
+                return (b.quantity * b.currentPrice) - (a.quantity * a.currentPrice);
+            }).slice(0, 3);
+
+            if (sorted.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4 bg-white dark:bg-slate-900 border border-dashed border-gray-200 dark:border-slate-800 rounded-2xl text-xs text-gray-400 dark:text-slate-500">
+                        アセットが登録されていません。「アセット」タブから追加可能です。
+                    </div>
+                `;
+                return;
+            }
+
+            const symbol = state.displayCurrency === 'USD' ? '$' : '¥';
+            const rate = state.displayCurrency === 'USD' ? 1 : state.fxRate;
+
+            sorted.forEach((asset, idx) => {
+                const totalVal = asset.quantity * asset.currentPrice;
+                const badge = idx === 0 ? '👑' : (idx === 1 ? '🥈' : '🥉');
+                
+                const item = document.createElement('div');
+                item.className = "bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-850 p-3.5 rounded-2xl flex justify-between items-center";
+                
+                const valueText = state.privacyMode ? '••••••' : symbol + (totalVal * rate).toLocaleString(undefined, {maximumFractionDigits: 2});
+                
+                item.innerHTML = `
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-lg">${badge}</span>
+                        <div>
+                            <p class="text-xs font-black">${asset.name}</p>
+                            <span class="text-[10px] bg-slate-800/60 text-slate-400 px-2 py-0.5 rounded-full font-bold">${asset.chain}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs font-black text-indigo-400">${valueText}</p>
+                        <p class="text-[10px] text-gray-400">${state.privacyMode ? '••' : asset.quantity} ${asset.name}</p>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // =====================================
+        // 📂 プロジェクト機能 (エアドロ期待額)
+        // =====================================
+        function renderProjects() {
+            const container = document.getElementById('projectList');
+            container.innerHTML = "";
+
+            if (state.projects.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white dark:bg-slate-900 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl text-sm text-gray-400 dark:text-slate-500">
+                        <i class="fa-solid fa-folder-open text-3xl mb-2 text-indigo-500/50"></i>
+                        <p>プロジェクトがありません</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const symbol = state.displayCurrency === 'USD' ? '$' : '¥';
+            const rate = state.displayCurrency === 'USD' ? 1 : state.fxRate;
+
+            state.projects.forEach(proj => {
+                const invested = parseFloat(proj.invested) || 0;
+                const current = parseFloat(proj.current) || 0;
+
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-850 p-5 rounded-3xl shadow-sm relative";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="text-base font-black flex items-center gap-1.5">
+                                <i class="fa-solid fa-cube text-indigo-500"></i> ${proj.name}
+                            </h3>
+                            <p class="text-[10px] text-gray-400 font-bold">投資PJID: #${proj.id}</p>
+                        </div>
+                        <span class="text-xs font-black px-2.5 py-1 rounded-full text-purple-400 bg-purple-500/10">
+                            見込みPJ
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 mb-4 bg-gray-50 dark:bg-slate-950 p-3 rounded-2xl border border-gray-100 dark:border-slate-850/50">
+                        <div>
+                            <span class="text-[10px] text-gray-400 block">実投資コスト</span>
+                            <span class="text-xs font-bold">${state.privacyMode ? '••••' : symbol + (invested * rate).toLocaleString()}</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-purple-400 block font-bold">見込みエアドロ期待額</span>
+                            <span class="text-xs font-black text-purple-400">${state.privacyMode ? '••••' : symbol + (current * rate).toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-gray-400 dark:text-slate-300 leading-relaxed mb-4 bg-slate-900/10 dark:bg-slate-950/25 p-2 rounded-xl">
+                        ${proj.notes || 'タスクメモなし'}
+                    </p>
+
+                    <!-- クイックリンク & AIボタン -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-gray-100 dark:border-slate-850/50">
+                        <div class="flex gap-2">
+                            ${proj.xLink ? `<a href="${proj.xLink}" target="_blank" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-850 hover:bg-indigo-600/20 text-slate-400 hover:text-indigo-400 flex items-center justify-center transition" title="X"><i class="fa-brands fa-x-twitter text-sm"></i></a>` : ''}
+                            ${proj.discordLink ? `<a href="${proj.discordLink}" target="_blank" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-850 hover:bg-indigo-600/20 text-slate-400 hover:text-indigo-400 flex items-center justify-center transition" title="Discord"><i class="fa-brands fa-discord text-sm"></i></a>` : ''}
+                            ${proj.webLink ? `<a href="${proj.webLink}" target="_blank" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-850 hover:bg-indigo-600/20 text-slate-400 hover:text-indigo-400 flex items-center justify-center transition" title="Website"><i class="fa-solid fa-globe text-sm"></i></a>` : ''}
+                            ${proj.debankLink ? `<a href="${proj.debankLink}" target="_blank" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-850 hover:bg-indigo-600/20 text-slate-400 hover:text-indigo-400 flex items-center justify-center transition" title="DeBank"><i class="fa-solid fa-chart-pie text-sm"></i></a>` : ''}
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <button onclick="runAiResearch('${proj.name}')" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 text-[10px] font-black px-3 py-2 rounded-xl transition flex items-center gap-1 border border-indigo-500/20">
+                                <i class="fa-solid fa-robot"></i> AIリサーチ
+                            </button>
+                            <button onclick="editProject('${proj.id}')" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-slate-300 text-[10px] font-bold px-3 py-2 rounded-xl transition">
+                                編集
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // =====================================
+        // 👥 アカウント管理 (プロファイル: マスク & コピー)
+        // =====================================
+        function renderAccounts() {
+            const container = document.getElementById('accountList');
+            container.innerHTML = "";
+
+            if (state.accounts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white dark:bg-slate-900 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl text-sm text-gray-400 dark:text-slate-500">
+                        <i class="fa-solid fa-users text-3xl mb-2 text-indigo-500/50"></i>
+                        <p>プロファイル情報がありません</p>
+                    </div>
+                `;
+                return;
+            }
+
+            state.accounts.forEach(acc => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-850 p-5 rounded-3xl shadow-sm";
+                
+                const bId = `field-browser-${acc.id}`;
+                const pId = `field-proxy-${acc.id}`;
+                const wId = `field-wallet-${acc.id}`;
+                const xId = `field-x-${acc.id}`;
+                const dId = `field-discord-${acc.id}`;
+
+                const dispBrowser = visibleFields[bId] ? (acc.browserId || 'なし') : '••••••••••••';
+                const dispProxy = visibleFields[pId] ? (acc.proxyIp || '直接接続') : '••••••••••••';
+                const dispWallet = visibleFields[wId] ? (acc.wallet || '未登録') : '••••••••••••';
+                const dispX = visibleFields[xId] ? (acc.xAccount || '未紐付') : '••••••••••••';
+                const dispDiscord = visibleFields[dId] ? (acc.discordAccount || '未紐付') : '••••••••••••';
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-3.5">
+                        <h3 class="text-sm font-black flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-gear text-indigo-500"></i> ${acc.name}
+                        </h3>
+                        <button onclick="editAccount('${acc.id}')" class="text-[10px] text-gray-400 hover:text-white font-bold transition">
+                            <i class="fa-solid fa-pen-to-square"></i> 編集
+                        </button>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <!-- ブラウザ ID -->
+                        <div class="flex justify-between items-center p-2 rounded-xl bg-gray-50 dark:bg-slate-950 border border-gray-100 dark:border-slate-850/50">
+                            <span class="text-[10px] text-gray-400 font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-window-restore text-slate-500"></i> ブラウザ ID
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span id="${bId}" class="font-mono text-white tracking-wide font-bold">${dispBrowser}</span>
+                                <button onclick="toggleFieldVisibility('${bId}', '${acc.browserId || 'なし'}')" class="text-[11px] text-slate-500 hover:text-white transition">
+                                    <i class="fa-solid ${visibleFields[bId] ? 'fa-eye' : 'fa-eye-slash'}" id="eye-${bId}"></i>
+                                </button>
+                                <button onclick="copyToClipboard('${acc.browserId || ''}', 'ブラウザIDをコピー')" class="text-[11px] text-indigo-400 hover:text-indigo-300 transition">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Proxy IP -->
+                        <div class="flex justify-between items-center p-2 rounded-xl bg-gray-50 dark:bg-slate-950 border border-gray-100 dark:border-slate-850/50">
+                            <span class="text-[10px] text-gray-400 font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-network-wired text-slate-500"></i> Proxy IP
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span id="${pId}" class="font-mono text-white tracking-wide font-bold">${dispProxy}</span>
+                                <button onclick="toggleFieldVisibility('${pId}', '${acc.proxyIp || '直接接続'}')" class="text-[11px] text-slate-500 hover:text-white transition">
+                                    <i class="fa-solid ${visibleFields[pId] ? 'fa-eye' : 'fa-eye-slash'}" id="eye-${pId}"></i>
+                                </button>
+                                <button onclick="copyToClipboard('${acc.proxyIp || ''}', 'Proxy IPをコピー')" class="text-[11px] text-indigo-400 hover:text-indigo-300 transition">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Wallet Address -->
+                        <div class="flex justify-between items-center p-2 rounded-xl bg-gray-50 dark:bg-slate-950 border border-gray-100 dark:border-slate-850/50">
+                            <span class="text-[10px] text-gray-400 font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-wallet text-slate-500"></i> Wallet Address
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span id="${wId}" class="font-mono text-white tracking-wide text-[11px] font-bold">${dispWallet}</span>
+                                <button onclick="toggleFieldVisibility('${wId}', '${acc.wallet || '未登録'}')" class="text-[11px] text-slate-500 hover:text-white transition">
+                                    <i class="fa-solid ${visibleFields[wId] ? 'fa-eye' : 'fa-eye-slash'}" id="eye-${wId}"></i>
+                                </button>
+                                <button onclick="copyToClipboard('${acc.wallet || ''}', 'ウォレットアドレスをコピー')" class="text-[11px] text-indigo-400 hover:text-indigo-300 transition">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- X / Discord 紐付け情報 -->
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-850">
+                                <div class="flex flex-col">
+                                    <span class="text-[9px] text-slate-400">X(Twitter)</span>
+                                    <span id="${xId}" class="font-bold text-[10px] truncate max-w-[90px] text-white">${dispX}</span>
+                                </div>
+                                <div class="flex gap-1.5 ml-1">
+                                    <button onclick="toggleFieldVisibility('${xId}', '${acc.xAccount || '未紐付'}')" class="text-[10px] text-slate-500 hover:text-white">
+                                        <i class="fa-solid ${visibleFields[xId] ? 'fa-eye' : 'fa-eye-slash'}" id="eye-${xId}"></i>
+                                    </button>
+                                    <button onclick="copyToClipboard('${acc.xAccount || ''}', 'XユーザーIDをコピー')" class="text-[10px] text-indigo-400 hover:text-indigo-300">
+                                        <i class="fa-solid fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900 border border-slate-850">
+                                <div class="flex flex-col">
+                                    <span class="text-[9px] text-slate-400">Discord</span>
+                                    <span id="${dId}" class="font-bold text-[10px] truncate max-w-[90px] text-white">${dispDiscord}</span>
+                                </div>
+                                <div class="flex gap-1.5 ml-1">
+                                    <button onclick="toggleFieldVisibility('${dId}', '${acc.discordAccount || '未紐付'}')" class="text-[10px] text-slate-500 hover:text-white">
+                                        <i class="fa-solid ${visibleFields[dId] ? 'fa-eye' : 'fa-eye-slash'}" id="eye-${dId}"></i>
+                                    </button>
+                                    <button onclick="copyToClipboard('${acc.discordAccount || ''}', 'Discord情報をコピー')" class="text-[10px] text-indigo-400 hover:text-indigo-300">
+                                        <i class="fa-solid fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // =====================================
+        // 💰 アセット管理
+        // =====================================
+        function renderAssets() {
+            const container = document.getElementById('allAssetsList');
+            container.innerHTML = "";
+
+            if (state.assets.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white dark:bg-slate-900 border border-dashed border-gray-200 dark:border-slate-800 rounded-3xl text-sm text-gray-400 dark:text-slate-500">
+                        <i class="fa-solid fa-coins text-3xl mb-2 text-indigo-500/50"></i>
+                        <p>保有アセットが登録されていません</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const symbol = state.displayCurrency === 'USD' ? '$' : '¥';
+            const rate = state.displayCurrency === 'USD' ? 1 : state.fxRate;
+
+            state.assets.forEach(asset => {
+                const totalVal = asset.quantity * asset.currentPrice;
+                const buyVal = asset.quantity * asset.buyPrice;
+                const diff = totalVal - buyVal;
+                const pct = buyVal > 0 ? (diff / buyVal) * 100 : 0;
+                
+                const sign = diff >= 0 ? '+' : '';
+                const pnlColor = diff >= 0 ? 'text-emerald-400' : 'text-rose-400';
+
+                const div = document.createElement('div');
+                div.className = "bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-100 dark:border-slate-850 shadow-sm flex justify-between items-center";
+                
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold text-sm">
+                            ${asset.name.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <p class="text-sm font-black">${asset.name}</p>
+                                <span class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded-full font-bold">${asset.chain}</span>
+                            </div>
+                            <p class="text-[10px] text-gray-400 font-bold">数量: ${state.privacyMode ? '••' : asset.quantity}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-black text-indigo-400">${state.privacyMode ? '••••••' : symbol + (totalVal * rate).toLocaleString(undefined, {maximumFractionDigits: 2})}</p>
+                        <span class="text-[10px] font-black ${pnlColor}">${sign}${pct.toFixed(1)}%</span>
+                        <button onclick="editAsset('${asset.id}')" class="text-xs text-indigo-400/80 hover:text-indigo-400 font-bold ml-2 transition">
+                            編集
+                        </button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // =====================================
+        // 🤖 AIリサーチャー
+        // =====================================
+        async function runAiResearch(projectName) {
+            const apiKey = state.apiKey;
+            if (!apiKey) {
+                showToast("SettingsからGemini APIキーを登録してください。");
+                switchView('settings');
+                return;
+            }
+
+            const modal = document.getElementById('aiResearchModal');
+            const title = document.getElementById('researchProjectName');
+            const content = document.getElementById('researchContent');
+            
+            title.textContent = `${projectName} - 最新AIリサーチ`;
+            content.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12">
+                    <div class="animate-spin rounded-full h-8 w-8 border-2 border-indigo-500 border-t-transparent mb-4"></div>
+                    <p class="text-xs text-indigo-400 font-bold">Google Search Grounding でリアルタイム情報を検索中...</p>
+                    <p class="text-[10px] text-slate-500 mt-1">数秒かかる場合があります</p>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+
+            const systemPrompt = `あなたは最強のWeb3・仮想通貨の戦略エアドロハンターです。
+指定された暗号資産プロジェクトに関して、最新のタスクアップデート、Xの重要発表、テストネット・メインネットの現段階、セキュリティリスク、必要なアクションを、客観的かつ明確な箇条書き(Markdown形式)で整理・報告してください。`;
+
+            const userQuery = `仮想通貨プロジェクト 「${projectName}」 についての、最新のエアドロップ状況、本日時点の活動タスク、および注意すべきポイント・SNSの速報内容を日本語で包括的に要約してください。`;
+
+            let attempts = 0;
+            const maxRetries = 5;
+            let currentDelay = 1000;
+
+            const makeRequest = async () => {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: userQuery }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    tools: [{ "google_search": {} }] 
+                };
+
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                return await response.json();
+            };
+
+            while (attempts < maxRetries) {
+                try {
+                    const result = await makeRequest();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    
+                    if (text) {
+                        let formattedText = text
+                            .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em class="text-indigo-300">$1</em>')
+                            .replace(/### (.*?)\n/g, '<h4 class="text-sm font-black text-indigo-300 mt-4 mb-1.5 flex items-center gap-1"><i class="fa-solid fa-arrow-right-long text-xs"></i> $1</h4>')
+                            .replace(/## (.*?)\n/g, '<h3 class="text-base font-black text-indigo-400 mt-5 mb-2 border-b border-slate-800 pb-1">$1</h3>')
+                            .replace(/# (.*?)\n/g, '<h2 class="text-lg font-black text-white mt-6 mb-3">$1</h2>')
+                            .replace(/\n/g, '<br>');
+
+                        const attributions = result.candidates?.[0]?.groundingMetadata?.groundingAttributions;
+                        let attributionsHtml = "";
+                        if (attributions && attributions.length > 0) {
+                            attributionsHtml = `<div class="mt-6 pt-3 border-t border-slate-850">
+                                <p class="text-[10px] text-gray-400 font-bold mb-2"><i class="fa-solid fa-square-rss mr-1 text-emerald-400"></i>参照Web情報源:</p>
+                                <div class="flex flex-col gap-1">`;
+                            const uniqueLinks = {};
+                            attributions.forEach(attr => {
+                                if (attr.web?.uri && !uniqueLinks[attr.web.uri]) {
+                                    uniqueLinks[attr.web.uri] = true;
+                                    attributionsHtml += `<a href="${attr.web.uri}" target="_blank" class="text-[11px] text-indigo-400 hover:underline truncate transition flex items-center gap-1">
+                                        <i class="fa-solid fa-link text-[9px]"></i> ${attr.web.title || attr.web.uri}
+                                    </a>`;
+                                }
+                            });
+                            attributionsHtml += `</div></div>`;
+                        }
+
+                        content.innerHTML = `
+                            <div class="space-y-2">
+                                ${formattedText}
+                                ${attributionsHtml}
+                            </div>
+                        `;
+                        return;
+                    } else {
+                        throw new Error("応答のパースに失敗しました。");
+                    }
+                } catch (error) {
+                    attempts++;
+                    if (attempts >= maxRetries) {
+                        content.innerHTML = `
+                            <div class="text-center py-6 text-rose-400">
+                                <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
+                                <p class="text-xs font-bold">リサーチ呼び出しに失敗しました。</p>
+                                <p class="text-[10px] text-gray-500 mt-1">${error.message}</p>
+                                <button onclick="runAiResearch('${projectName}')" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">再試行する</button>
+                            </div>
+                        `;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, currentDelay));
+                    currentDelay *= 2;
+                }
+            }
+        }
+
+        function copyResearchResult() {
+            const container = document.getElementById('researchContent');
+            copyToClipboard(container.innerText, "AIリサーチ結果をコピーしました！");
+        }
+
+        // =====================================
+        // 各種CRUDアクション
+        // =====================================
+        function openAddAssetModal() {
+            state.editingAssetId = null;
+            document.getElementById('assetModalTitle').innerHTML = '<i class="fa-solid fa-coins text-indigo-500 mr-1.5"></i>資産アセット追加';
+            document.getElementById('assetName').value = "";
+            document.getElementById('assetChain').value = "ETH";
+            document.getElementById('assetWallet').value = "";
+            document.getElementById('assetQty').value = "";
+            document.getElementById('assetBuyPrice').value = "";
+            document.getElementById('assetCurrentPrice').value = "";
+            document.getElementById('btnDeleteAsset').classList.add('hidden');
+            document.getElementById('assetModal').classList.remove('hidden');
+        }
+
+        function editAsset(id) {
+            const asset = state.assets.find(a => a.id === id);
+            if (!asset) return;
+            state.editingAssetId = id;
+            document.getElementById('assetModalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-indigo-500 mr-1.5"></i>アセットの編集';
+            document.getElementById('assetName').value = asset.name;
+            document.getElementById('assetChain').value = asset.chain;
+            document.getElementById('assetWallet').value = asset.wallet || "";
+            document.getElementById('assetQty').value = asset.quantity;
+            document.getElementById('assetBuyPrice').value = asset.buyPrice;
+            document.getElementById('assetCurrentPrice').value = asset.currentPrice;
+            document.getElementById('btnDeleteAsset').classList.remove('hidden');
+            document.getElementById('assetModal').classList.remove('hidden');
+        }
+
+        function saveAssetAction() {
+            const name = document.getElementById('assetName').value.trim();
+            const chain = document.getElementById('assetChain').value;
+            const wallet = document.getElementById('assetWallet').value.trim();
+            const qty = parseFloat(document.getElementById('assetQty').value);
+            const buyPrice = parseFloat(document.getElementById('assetBuyPrice').value);
+            const currentPrice = parseFloat(document.getElementById('assetCurrentPrice').value) || buyPrice;
+
+            if (!name || isNaN(qty) || isNaN(buyPrice)) {
+                showToast("必須項目を正しく入力してください");
+                return;
+            }
+
+            if (state.editingAssetId) {
+                const idx = state.assets.findIndex(a => a.id === state.editingAssetId);
+                if (idx !== -1) {
+                    state.assets[idx] = { ...state.assets[idx], name, chain, wallet, quantity: qty, buyPrice, currentPrice };
+                    showToast("資産データを更新しました");
+                }
+            } else {
+                const newAsset = {
+                    id: 'asset_' + Date.now(),
+                    name, chain, wallet, quantity: qty, buyPrice, currentPrice
+                };
+                state.assets.push(newAsset);
+                showToast("資産アセットを新規登録しました");
+            }
+
+            localStorage.setItem("assets", JSON.stringify(state.assets));
+            closeModal('assetModal');
+            initAppDashboard();
+        }
+
+        function deleteAssetAction() {
+            if (!state.editingAssetId) return;
+            state.assets = state.assets.filter(a => a.id !== state.editingAssetId);
+            localStorage.setItem("assets", JSON.stringify(state.assets));
+            showToast("アセットを削除しました");
+            closeModal('assetModal');
+            initAppDashboard();
+        }
+
+        function openProjectModal() {
+            state.editingProjectId = null;
+            document.getElementById('projectModalTitle').innerHTML = '<i class="fa-solid fa-folder-plus text-indigo-500 mr-1.5"></i>プロジェクトの新規作成';
+            document.getElementById('projName').value = "";
+            document.getElementById('projInvested').value = "";
+            document.getElementById('projCurrent').value = "";
+            document.getElementById('projX').value = "";
+            document.getElementById('projDiscord').value = "";
+            document.getElementById('projWeb').value = "";
+            document.getElementById('projDebank').value = "";
+            document.getElementById('projNotes').value = "";
+            document.getElementById('btnDeleteProj').classList.add('hidden');
+            document.getElementById('projectModal').classList.remove('hidden');
+        }
+
+        function editProject(id) {
+            const proj = state.projects.find(p => p.id === id);
+            if (!proj) return;
+            state.editingProjectId = id;
+            document.getElementById('projectModalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-indigo-500 mr-1.5"></i>プロジェクト編集';
+            document.getElementById('projName').value = proj.name;
+            document.getElementById('projInvested').value = proj.invested;
+            document.getElementById('projCurrent').value = proj.current;
+            document.getElementById('projX').value = proj.xLink || "";
+            document.getElementById('projDiscord').value = proj.discordLink || "";
+            document.getElementById('projWeb').value = proj.webLink || "";
+            document.getElementById('projDebank').value = proj.debankLink || "";
+            document.getElementById('projNotes').value = proj.notes || "";
+            document.getElementById('btnDeleteProj').classList.remove('hidden');
+            document.getElementById('projectModal').classList.remove('hidden');
+        }
+
+        function saveProjAction() {
+            const name = document.getElementById('projName').value.trim();
+            const invested = parseFloat(document.getElementById('projInvested').value) || 0;
+            const current = parseFloat(document.getElementById('projCurrent').value);
+            const xLink = document.getElementById('projX').value.trim();
+            const discordLink = document.getElementById('projDiscord').value.trim();
+            const webLink = document.getElementById('projWeb').value.trim();
+            const debankLink = document.getElementById('projDebank').value.trim();
+            const notes = document.getElementById('projNotes').value.trim();
+
+            if (!name || isNaN(current)) {
+                showToast("プロジェクト名と見込み期待額は必須です");
+                return;
+            }
+
+            if (state.editingProjectId) {
+                const idx = state.projects.findIndex(p => p.id === state.editingProjectId);
+                if (idx !== -1) {
+                    state.projects[idx] = { ...state.projects[idx], name, invested, current, xLink, discordLink, webLink, debankLink, notes };
+                    showToast("プロジェクトを更新しました");
+                }
+            } else {
+                const newProj = {
+                    id: 'p_' + Date.now(),
+                    name, invested, current, xLink, discordLink, webLink, debankLink, notes
+                };
+                state.projects.push(newProj);
+                showToast("新規プロジェクトを登録しました");
+            }
+
+            localStorage.setItem("projects", JSON.stringify(state.projects));
+            closeModal('projectModal');
+            initAppDashboard();
+        }
+
+        function deleteProjAction() {
+            if (!state.editingProjectId) return;
+            state.projects = state.projects.filter(p => p.id !== state.editingProjectId);
+            localStorage.setItem("projects", JSON.stringify(state.projects));
+            showToast("プロジェクトを削除しました");
+            closeModal('projectModal');
+            initAppDashboard();
+        }
+
+        function openAccountModal() {
+            state.editingAccountId = null;
+            document.getElementById('accountModalTitle').innerHTML = '<i class="fa-solid fa-user-plus text-indigo-500 mr-1.5"></i>プロファイルの新規登録';
+            document.getElementById('accName').value = "";
+            document.getElementById('accBrowser').value = "";
+            document.getElementById('accProxy').value = "";
+            document.getElementById('accWallet').value = "";
+            document.getElementById('accX').value = "";
+            document.getElementById('accDiscord').value = "";
+            document.getElementById('btnDeleteAcc').classList.add('hidden');
+            document.getElementById('accountModal').classList.remove('hidden');
+        }
+
+        function editAccount(id) {
+            const acc = state.accounts.find(a => a.id === id);
+            if (!acc) return;
+            state.editingAccountId = id;
+            document.getElementById('accountModalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-indigo-500 mr-1.5"></i>プロファイルの編集';
+            document.getElementById('accName').value = acc.name;
+            document.getElementById('accBrowser').value = acc.browserId || "";
+            document.getElementById('accProxy').value = acc.proxyIp || "";
+            document.getElementById('accWallet').value = acc.wallet || "";
+            document.getElementById('accX').value = acc.xAccount || "";
+            document.getElementById('accDiscord').value = acc.discordAccount || "";
+            document.getElementById('btnDeleteAcc').classList.remove('hidden');
+            document.getElementById('accountModal').classList.remove('hidden');
+        }
+
+        function saveAccAction() {
+            const name = document.getElementById('accName').value.trim();
+            const browserId = document.getElementById('accBrowser').value.trim();
+            const proxyIp = document.getElementById('accProxy').value.trim();
+            const wallet = document.getElementById('accWallet').value.trim();
+            const xAccount = document.getElementById('accX').value.trim();
+            const discordAccount = document.getElementById('accDiscord').value.trim();
+
+            if (!name) {
+                showToast("プロファイル名を入力してください");
+                return;
+            }
+
+            if (state.editingAccountId) {
+                const idx = state.accounts.findIndex(a => a.id === state.editingAccountId);
+                if (idx !== -1) {
+                    state.accounts[idx] = { ...state.accounts[idx], name, browserId, proxyIp, wallet, xAccount, discordAccount };
+                    showToast("プロファイルを更新しました");
+                }
+            } else {
+                const newAcc = {
+                    id: 'acc_' + Date.now(),
+                    name, browserId, proxyIp, wallet, xAccount, discordAccount
+                };
+                state.accounts.push(newAcc);
+                showToast("プロファイルを追加しました");
+            }
+
+            localStorage.setItem("accounts", JSON.stringify(state.accounts));
+            closeModal('accountModal');
+            initAppDashboard();
+        }
+
+        function deleteAccAction() {
+            if (!state.editingAccountId) return;
+            state.accounts = state.accounts.filter(a => a.id !== state.editingAccountId);
+            localStorage.setItem("accounts", JSON.stringify(state.accounts));
+            showToast("プロファイルを削除しました");
+            closeModal('accountModal');
+            initAppDashboard();
+        }
+
+        // =====================================
+        // 環境設定その他
+        // =====================================
+        function togglePrivacy() {
+            state.privacyMode = !state.privacyMode;
+            localStorage.setItem("privacyMode", state.privacyMode);
+            const icon = document.getElementById('privacyIcon');
+            if (state.privacyMode) {
+                icon.className = "fa-solid fa-eye-slash text-rose-500 animate-pulse";
+                showToast("プライバシーモード有効 (数値を非表示化)");
+            } else {
+                icon.className = "fa-solid fa-eye";
+                showToast("プライバシーモード解除");
+            }
+            renderDashboard();
+        }
+
+        function refreshData() {
+            showToast("価格情報を再計算中...");
+            setTimeout(() => {
+                renderDashboard();
+                showToast("同期完了しました");
+            }, 600);
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('geminiApiKey').value.trim();
+            state.apiKey = key;
+            localStorage.setItem("gemini_apiKey", key);
+            showToast("Gemini APIキーを安全に保存しました");
+        }
+
+        function saveGoalAmount() {
+            const val = parseFloat(document.getElementById('goalAmountInput').value);
+            if (isNaN(val) || val <= 0) {
+                showToast("正しい数値を設定してください");
+                return;
+            }
+            state.goalAmount = val;
+            localStorage.setItem("goalAmount", val);
+            showToast("目標金額を更新しました");
+            renderDashboard();
+        }
+
+        function saveProfileImage() {
+            const url = document.getElementById('profileImgUrl').value.trim();
+            state.profileImg = url;
+            localStorage.setItem("profileImg", url);
+            updateProfileUI();
+            showToast("プロフィール画像を更新しました");
+        }
+
+        function updateProfileUI() {
+            const headPlaceholder = document.getElementById('headerProfilePlaceholder');
+            const headImg = document.getElementById('headerProfileImg');
+            const setPlaceholder = document.getElementById('settingsProfilePlaceholder');
+            const setImg = document.getElementById('settingsProfileImg');
+
+            if (state.profileImg) {
+                headPlaceholder.classList.add('hidden');
+                headImg.src = state.profileImg;
+                headImg.classList.remove('hidden');
+                setPlaceholder.classList.add('hidden');
+                setImg.src = state.profileImg;
+                setImg.classList.remove('hidden');
+            } else {
+                headPlaceholder.classList.remove('hidden');
+                headImg.classList.add('hidden');
+                setPlaceholder.classList.remove('hidden');
+                setImg.classList.add('hidden');
+            }
+        }
+
+        function setTheme(theme) {
+            state.theme = theme;
+            localStorage.setItem("theme", theme);
+            const btnLight = document.getElementById('btnThemeLight');
+            const btnDark = document.getElementById('btnThemeDark');
+
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                btnDark.className = "flex-1 py-1 text-xs font-bold rounded-lg transition bg-indigo-600 text-white";
+                btnLight.className = "flex-1 py-1 text-xs font-bold rounded-lg transition text-slate-400";
+            } else {
+                document.documentElement.classList.remove('dark');
+                btnLight.className = "flex-1 py-1 text-xs font-bold rounded-lg transition bg-indigo-600 text-white";
+                btnDark.className = "flex-1 py-1 text-xs font-bold rounded-lg transition text-slate-400";
+            }
+        }
+
+        function setThemeCurrency(curr) {
+            state.displayCurrency = curr;
+            localStorage.setItem("displayCurrency", curr);
+            const btnUSD = document.getElementById('btnCurrencyUSD');
+            const btnJPY = document.getElementById('btnCurrencyJPY');
+
+            if (curr === 'USD') {
+                btnUSD.className = "flex-1 py-1 text-xs font-bold rounded-lg transition bg-indigo-600 text-white";
+                btnJPY.className = "flex-1 py-1 text-xs font-bold rounded-lg transition text-slate-400";
+            } else {
+                btnJPY.className = "flex-1 py-1 text-xs font-bold rounded-lg transition bg-indigo-600 text-white";
+                btnUSD.className = "flex-1 py-1 text-xs font-bold rounded-lg transition text-slate-400";
+            }
+
+            renderDashboard();
+            renderProjects();
+            renderAssets();
+            showToast("表示基軸通貨を変更しました");
+        }
+
+        function openPinSettingModal() {
+            document.getElementById('newPinInput').value = state.savedPin;
+            document.getElementById('pinSettingModal').classList.remove('hidden');
+        }
+
+        function savePinAction() {
+            const val = document.getElementById('newPinInput').value.trim();
+            if (val && val.length !== 6) {
+                showToast("PINロックコードは必ず6桁にしてください");
+                return;
+            }
+            state.savedPin = val;
+            localStorage.setItem("savedPin", val);
+            showToast(val ? "PINロックを登録しました" : "PINロックを無効化しました");
+            closeModal('pinSettingModal');
+            updateLockSettingButton();
+        }
+
+        function updateLockSettingButton() {
+            const btn = document.getElementById('btnPinSetting');
+            if (state.savedPin) {
+                btn.textContent = "変更 / 解除";
+                btn.className = "bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3.5 py-2 rounded-xl text-xs font-bold transition border border-rose-500/20";
+            } else {
+                btn.textContent = "有効にする";
+                btn.className = "bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition";
+            }
+        }
+
+        // =====================================
+        // 暗号化バックアップ & 復元ロジック (AES-256)
+        // =====================================
+        function openBackupCryptoModal(mode) {
+            cryptoMode = mode;
+            const title = document.getElementById('backupCryptoTitle');
+            const desc = document.getElementById('backupCryptoDesc');
+            const submitBtn = document.getElementById('btnCryptoSubmit');
+            document.getElementById('cryptoPasswordInput').value = "";
+
+            if (mode === 'encrypt') {
+                title.innerHTML = '<i class="fa-solid fa-file-shield mr-1"></i>パスワード付き暗号化バックアップ';
+                desc.textContent = "バックアップファイルを最高強度の暗号化(AES-256)で保護します。設定するパスワードを必ず記憶またはメモしてください。";
+                submitBtn.textContent = "暗号化して書き出し";
+            } else {
+                title.innerHTML = '<i class="fa-solid fa-unlock-keyhole mr-1"></i>バックアップファイルの復号・復元';
+                desc.textContent = "選択されたバックアップファイルにかかっている暗号を解くために、設定した暗号化パスワードを入力してください。";
+                submitBtn.textContent = "復号化してデータを復元";
+            }
+            document.getElementById('backupCryptoModal').classList.remove('hidden');
+        }
+
+        function submitCryptoAction() {
+            const password = document.getElementById('cryptoPasswordInput').value.trim();
+            if (!password) {
+                showToast("パスワードを入力してください");
+                return;
+            }
+
+            if (cryptoMode === 'encrypt') {
+                const rawJson = JSON.stringify(state);
+                const encrypted = CryptoJS.AES.encrypt(rawJson, password).toString();
+                const payload = {
+                    version: "V11-Encrypted",
+                    author: "PortfolioProV12",
+                    data: encrypted
+                };
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `secure_portfolio_${Date.now()}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+                showToast("AES-256で高度に暗号化されたJSONを保存しました！");
+                closeModal('backupCryptoModal');
+            } else {
+                try {
+                    const decryptedBytes = CryptoJS.AES.decrypt(pendingRestoreData, password);
+                    const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                    
+                    if (!decryptedText) {
+                        showToast("パスワードが間違っています。復号できません。");
+                        return;
+                    }
+
+                    const parsed = JSON.parse(decryptedText);
+                    if (parsed.assets || parsed.projects || parsed.accounts) {
+                        state.assets = parsed.assets || [];
+                        state.projects = parsed.projects || [];
+                        state.accounts = parsed.accounts || [];
+                        state.goalAmount = parsed.goalAmount || 100000;
+                        state.apiKey = parsed.apiKey || "";
+                        state.savedPin = parsed.savedPin || "";
+                        state.profileImg = parsed.profileImg || "";
+
+                        localStorage.setItem("assets", JSON.stringify(state.assets));
+                        localStorage.setItem("projects", JSON.stringify(state.projects));
+                        localStorage.setItem("accounts", JSON.stringify(state.accounts));
+                        localStorage.setItem("goalAmount", state.goalAmount);
+                        localStorage.setItem("gemini_apiKey", state.apiKey);
+                        localStorage.setItem("savedPin", state.savedPin);
+                        localStorage.setItem("profileImg", state.profileImg);
+
+                        showToast("安全に復号され、データが完全に復元されました！");
+                        closeModal('backupCryptoModal');
+                        initAppDashboard();
+                    } else {
+                        showToast("無効な内部データフォーマットです");
+                    }
+                } catch (err) {
+                    showToast("エラー: 復号化に失敗しました。正しいパスワードを入力してください。");
+                }
+            }
+        }
+
+        function triggerRestore() {
+            document.getElementById('restoreFile').click();
+        }
+
+        function handleRestoreFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (parsed.version === "V11-Encrypted" && parsed.data) {
+                        pendingRestoreData = parsed.data;
+                        openBackupCryptoModal('decrypt');
+                    } else {
+                        if (parsed.assets || parsed.projects || parsed.accounts) {
+                            state.assets = parsed.assets || [];
+                            state.projects = parsed.projects || [];
+                            state.accounts = parsed.accounts || [];
+                            localStorage.setItem("assets", JSON.stringify(state.assets));
+                            localStorage.setItem("projects", JSON.stringify(state.projects));
+                            localStorage.setItem("accounts", JSON.stringify(state.accounts));
+                            showToast("レガシーデータを復元しました");
+                            initAppDashboard();
+                        } else {
+                            showToast("無効なJSON形式です");
+                        }
+                    }
+                } catch (err) {
+                    showToast("ファイルを解析できませんでした");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function openApiGuideModal() {
+            document.getElementById('apiGuideModal').classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
