@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Web3 Portfolio Pro V15</title>
+    <title>Web3 Portfolio Pro V16</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -56,7 +56,6 @@
 </head>
 <body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-100 font-sans transition-colors duration-300 relative min-h-screen safe-pb overflow-x-hidden">
     
-    <!-- -->
     <!-- 免責事項 同意モーダル -->
     <div id="disclaimerModal" class="fixed inset-0 bg-slate-950/95 z-[210] flex items-center justify-center p-4 transition-opacity duration-500 hidden">
         <div class="bg-white dark:bg-slate-900 w-full max-w-sm p-6 rounded-3xl border-2 border-rose-500/30 shadow-2xl flex flex-col max-h-[90vh]">
@@ -68,7 +67,7 @@
             <div class="flex-1 overflow-y-auto text-xs text-gray-600 dark:text-slate-300 leading-relaxed mb-6 bg-gray-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-850 hide-scrollbar space-y-3">
                 <p class="font-bold">本アプリは、ユーザー自身が入力した数値を元に計算を行う「ポートフォリオ・シミュレーター（メモツール）」であり、実際のブロックチェーンや外部ウォレットと直接連携するものではありません。</p>
                 <p>アプリ内で表示される各アセットの価格や損益は、外部APIを利用した参考値であり、市場の正確な取引価格やリアルタイムの流動性を完全に保証するものではありません。</p>
-                <p>ブラウザ of データ消去や不具合によるデータ消失、または本アプリが表示した情報に基づいて行われた投資判断によって生じた直接的・間接的な損失について、開発者および提供者は一切の責任を負いません。</p>
+                <p>ブラウザのデータ消去や不具合によるデータ消失、または本アプリが表示した情報に基づいて行われた投資判断によって生じた直接的・間接的な損失について、開発者および提供者は一切の責任を負いません。</p>
                 <p class="font-bold text-rose-400">必ずご自身で定期的な「暗号化バックアップ（データ保存）」を行い、安全な場所に保存していただくようお願いいたします。</p>
             </div>
             
@@ -84,7 +83,6 @@
         <span id="toastMessage">完了しました</span>
     </div>
 
-    <!-- -->
     <!-- パスコードロック画面 -->
     <div id="lockScreen" class="fixed inset-0 bg-white dark:bg-slate-950 z-[100] flex flex-col items-center justify-center transition-opacity duration-500 hidden">
         <div class="text-center mb-8">
@@ -121,7 +119,6 @@
     <!-- アプリメインコンテンツコンテナ -->
     <div class="max-w-md mx-auto h-full relative" id="mainAppContent">
         
-        <!-- -->
         <!-- =====================================
              VIEW: HOME (ポートフォリオダッシュボード)
         ====================================== -->
@@ -134,7 +131,7 @@
                     </div>
                     <div>
                         <h1 class="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                            Portfolio Pro V15
+                            Portfolio Pro V16
                         </h1>
                     </div>
                 </div>
@@ -148,7 +145,7 @@
                 </div>
             </header>
 
-            <!-- 確定実資産メイン ダッシュボード (確定と見込みの完全分離) -->
+            <!-- 確定実資産メイン ダッシュボード -->
             <div class="mb-6 mt-2 bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-200/10 p-5 rounded-3xl shadow-xl relative overflow-hidden">
                 <div class="relative z-10">
                     <p class="text-[11px] text-indigo-300 uppercase tracking-wider mb-1 font-black text-center">確定済みの実保有資産総額</p>
@@ -205,7 +202,6 @@
                 </div>
             </div>
 
-            <!-- -->
             <!-- チャートセクション -->
             <div class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-100 dark:border-slate-800/80 mb-6 shadow-sm">
                 <div class="flex justify-center mb-4 bg-gray-50 dark:bg-slate-950 p-1 rounded-xl border border-gray-100 dark:border-slate-800">
@@ -253,7 +249,6 @@
             </div>
         </div>
 
-        <!-- -->
         <!-- =====================================
              VIEW: ACCOUNTS (ウォレット & タスク別 プロファイル管理)
         ====================================== -->
@@ -293,7 +288,6 @@
             </div>
         </div>
 
-        <!-- -->
         <!-- =====================================
              VIEW: SETTINGS (各種設定)
         ====================================== -->
@@ -307,10 +301,10 @@
                 <!-- Gemini API設定 -->
                 <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
                     <h3 class="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-1.5">
-                        <i class="fa-solid fa-robot"></i> AIリサーチャー設定 (Gemini API)
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AIリサーチャー設定 (Gemini API)
                     </h3>
                     <p class="text-xs text-gray-400 dark:text-slate-400 mb-3 leading-relaxed">
-                        プロジェクト詳細画面からAIリサーチを使用するために、ご自身のGemini APIキーを入力して保存してください。
+                        プロジェクト詳細画面からGemini AIリサーチを使用するために、ご自身のGemini APIキーを入力して保存してください。
                     </p>
                     <div class="flex gap-2 mb-3">
                         <input type="password" id="geminiApiKey" placeholder="AI-zaSy..." class="flex-1 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white">
@@ -318,12 +312,37 @@
                             保存
                         </button>
                     </div>
-                    <!-- 初心者向けサポートリンク & 1分ガイド -->
+                    <!-- Gemini 取得方法 1分ガイド -->
                     <div class="flex flex-col gap-2 pt-2 border-t border-slate-850/80 text-xs">
                         <a href="https://aistudio.google.com/" target="_blank" class="text-indigo-400 hover:underline flex items-center gap-1">
                             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> 👉 無料の API キー取得はこちら(Google AI Studio)
                         </a>
                         <button onclick="openApiGuideModal()" class="text-left text-emerald-400 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-circle-question"></i> 👉 取得方法の簡単 1 分 ガイドを読む
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 🆕 ChatGPT (OpenAI) API設定 -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
+                    <h3 class="text-sm font-bold text-emerald-400 mb-3 flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt"></i> AIリサーチャー設定 (ChatGPT API)
+                    </h3>
+                    <p class="text-xs text-gray-400 dark:text-slate-400 mb-3 leading-relaxed">
+                        プロジェクト詳細画面からGeminiに加えて、ChatGPT(OpenAI)のリサーチ機能を使用するために、ご自身のOpenAI APIキーを入力して保存してください。
+                    </p>
+                    <div class="flex gap-2 mb-3">
+                        <input type="password" id="openaiApiKey" placeholder="sk-proj-..." class="flex-1 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 text-white">
+                        <button onclick="saveOpenaiApiKey()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2 rounded-xl font-bold transition">
+                            保存
+                        </button>
+                    </div>
+                    <!-- ChatGPT 取得方法 1分ガイド -->
+                    <div class="flex flex-col gap-2 pt-2 border-t border-slate-850/80 text-xs">
+                        <a href="https://platform.openai.com/api-keys" target="_blank" class="text-emerald-400 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> 👉 API キー取得はこちら(OpenAI Platform)
+                        </a>
+                        <button onclick="openOpenaiApiGuideModal()" class="text-left text-indigo-400 hover:underline flex items-center gap-1">
                             <i class="fa-solid fa-circle-question"></i> 👉 取得方法の簡単 1 分 ガイドを読む
                         </button>
                     </div>
@@ -345,22 +364,24 @@
                     </div>
                 </div>
 
-                <!-- 👤 新機能: プロフィール設定（端末のアルバムから直接写真を登録） -->
+                <!-- 📷 プロフィール設定 (端末の写真フォルダからダイレクトにアップロードする形式にアップグレード！) -->
                 <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
-                    <h3 class="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-1.5">
+                    <h3 class="text-sm font-bold text-indigo-400 mb-2 flex items-center gap-1.5">
                         <i class="fa-solid fa-id-card"></i> プロフィール設定
                     </h3>
+                    <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+                        スマホのアルバム写真やカメラ画像からお好きな写真を選択して、マイプロフィール画像に設定できます（自動で超軽量に圧縮されます）。
+                    </p>
                     <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center border border-slate-700 relative">
+                        <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center border border-slate-700 relative shadow-inner">
                             <i id="settingsProfilePlaceholder" class="fa-solid fa-user text-slate-500 text-xl"></i>
                             <img id="settingsProfileImg" class="w-full h-full object-cover hidden">
                         </div>
                         <div class="flex-1">
-                            <input type="file" id="profileImgFile" accept="image/*" class="hidden" onchange="handleProfileImgUpload(event)">
-                            <button onclick="triggerProfileImgSelect()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow-lg shadow-indigo-500/10 mb-2">
-                                <i class="fa-solid fa-image"></i> 写真を選択する
+                            <input type="file" id="profileFileInput" accept="image/*" class="hidden" onchange="handleProfileUpload(event)">
+                            <button onclick="triggerProfileSelect()" class="bg-indigo-600 hover:bg-indigo-750 text-white text-xs px-4 py-2.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow-lg shadow-indigo-500/10">
+                                <i class="fa-solid fa-image"></i> 写真から選択する
                             </button>
-                            <p class="text-[9px] text-gray-500 dark:text-slate-500">※お持ちの写真フォルダから顔写真などをアップロードできます。自動で軽量丸型に加工・保存されます。</p>
                         </div>
                     </div>
                 </div>
@@ -641,12 +662,12 @@
                 <button onclick="closeModal('aiResearchModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg z-10"><i class="fa-solid fa-xmark"></i></button>
                 
                 <div class="flex items-center gap-2 mb-4">
-                    <div class="w-9 h-9 rounded-full bg-indigo-600/20 flex items-center justify-center text-indigo-400">
+                    <div class="w-9 h-9 rounded-full bg-indigo-600/20 flex items-center justify-center text-indigo-400" id="aiResearchIconWrapper">
                         <i class="fa-solid fa-robot"></i>
                     </div>
                     <div>
                         <h3 id="researchProjectName" class="text-base font-black">AIリサーチ結果</h3>
-                        <p class="text-[10px] text-gray-400 dark:text-indigo-400 font-bold">Powered by Gemini & Search Grounding</p>
+                        <p class="text-[10px] text-gray-400 dark:text-indigo-400 font-bold" id="aiResearchProviderLabel">Powered by Gemini & Search Grounding</p>
                     </div>
                 </div>
 
@@ -684,7 +705,7 @@
             </div>
         </div>
 
-        <!-- 新機能モーダル7: 🔑 Gemini API取得方法 1分簡単ガイド -->
+        <!-- モーダル7: 🔑 Gemini API取得方法 1分簡単ガイド -->
         <div id="apiGuideModal" class="fixed inset-0 z-[140] flex items-center justify-center glass-modal hidden">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative flex flex-col max-h-[85vh]">
                 <button onclick="closeModal('apiGuideModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg z-10"><i class="fa-solid fa-xmark"></i></button>
@@ -694,7 +715,7 @@
                         <i class="fa-solid fa-circle-info"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-black">APIキー 1分取得ガイド</h3>
+                        <h3 class="text-base font-black">Gemini APIキー 取得ガイド</h3>
                         <p class="text-[10px] text-gray-400 dark:text-emerald-400 font-bold">完全無料で今すぐ取得できます</p>
                     </div>
                 </div>
@@ -713,7 +734,16 @@
                             <p class="mt-1.5 font-bold text-white">Google AI Studioにアクセス</p>
                             <p class="text-[10px] text-gray-400 mt-1">「無料のAPIキー取得はこちら」のリンクをクリックしてGoogleアカウントでログインします。</p>
                         </div>
-
+                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800/80">
+                            <span class="bg-indigo-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Step 2</span>
+                            <p class="mt-1.5 font-bold text-white">「Get API Key」をクリック</p>
+                            <p class="text-[10px] text-gray-400 mt-1">画面上部の青い「Get API Key」ボタンを押し、規約に同意して「Create API Key」を選択します。</p>
+                        </div>
+                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800/80">
+                            <span class="bg-indigo-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Step 3</span>
+                            <p class="mt-1.5 font-bold text-white">キーをコピーしてアプリに貼る</p>
+                            <p class="text-[10px] text-gray-400 mt-1">「AI-zaSy...」から始まる文字をコピーし、設定画面のGemini入力欄に貼り付けて「保存」します。</p>
+                        </div>
                     </div>
                 </div>
 
@@ -725,9 +755,97 @@
             </div>
         </div>
 
+        <!-- 🆕 モーダル8: 🔑 OpenAI API取得方法 1分簡単ガイド -->
+        <div id="openaiApiGuideModal" class="fixed inset-0 z-[140] flex items-center justify-center glass-modal hidden">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative flex flex-col max-h-[85vh]">
+                <button onclick="closeModal('openaiApiGuideModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg z-10"><i class="fa-solid fa-xmark"></i></button>
+                
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-9 h-9 rounded-full bg-emerald-600/20 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black">ChatGPT APIキー 取得ガイド</h3>
+                        <p class="text-[10px] text-gray-400 dark:text-emerald-400 font-bold">アカウントがあれば即時発行可能</p>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto text-xs leading-relaxed text-slate-200 hide-scrollbar bg-gray-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-850 space-y-4">
+                    <div class="border-l-2 border-emerald-500 pl-2">
+                        <p class="font-bold text-white text-xs mb-1">🎁 費用や特徴は？</p>
+                        <p class="text-[11px] text-gray-400">OpenAIのAPIは使った分だけ支払う従量課金制です。新規登録時に無料クレジットが貰える場合もあります。超高速でハイパフォーマンスな分析が特徴です。</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <p class="font-bold text-emerald-300">🔑 取得の3ステップ</p>
+                        
+                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800/80">
+                            <span class="bg-emerald-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Step 1</span>
+                            <p class="mt-1.5 font-bold text-white">OpenAI Platformにアクセス</p>
+                            <p class="text-[10px] text-gray-400 mt-1">「APIキーの取得はこちら」のリンクから、ChatGPTと同じアカウントでログインします。</p>
+                        </div>
+                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800/80">
+                            <span class="bg-emerald-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Step 2</span>
+                            <p class="mt-1.5 font-bold text-white">「Create new secret key」をクリック</p>
+                            <p class="text-[10px] text-gray-400 mt-1">左メニューの「API keys」を選択し、「Create new secret key」ボタンを押します。適当な名前を付けてキーを作成します。</p>
+                        </div>
+                        <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800/80">
+                            <span class="bg-emerald-600 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">Step 3</span>
+                            <p class="mt-1.5 font-bold text-white">キーをコピーしてアプリに貼る</p>
+                            <p class="text-[10px] text-gray-400 mt-1">「sk-proj-...」から始まる文字をコピーし、設定画面のChatGPT入力欄に貼り付けて「保存」します。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-800/80">
+                    <button onclick="closeModal('openaiApiGuideModal')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-3 rounded-xl font-bold transition">
+                        分かりました！
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🆕 モーダル9: AIリサーチャーの選択（Gemini vs ChatGPT） -->
+        <div id="aiSelectModal" class="fixed inset-0 z-[120] flex items-center justify-center glass-modal hidden">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative">
+                <button onclick="closeModal('aiSelectModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="text-base font-black mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-robot text-indigo-500"></i>AIリサーチャーの選択</h3>
+                <p class="text-[11px] text-gray-500 dark:text-slate-400 mb-5">リサーチに使用するAIモデルを選択してください。</p>
+                
+                <div class="flex flex-col gap-3.5">
+                    <!-- Geminiボタン -->
+                    <button onclick="selectAiModel('gemini')" class="w-full text-left p-4 rounded-2xl border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 transition flex items-center justify-between group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-600/20 flex items-center justify-center text-indigo-400">
+                                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black text-white">Google Gemini 2.5</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5 leading-snug">Google検索連動。リアルタイムの最新Web情報に強い</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:text-indigo-400 transition"></i>
+                    </button>
+                    
+                    <!-- ChatGPTボタン -->
+                    <button onclick="selectAiModel('chatgpt')" class="w-full text-left p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 transition flex items-center justify-between group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-600/20 flex items-center justify-center text-emerald-400">
+                                <i class="fa-solid fa-bolt text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black text-white">OpenAI ChatGPT</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">超高速・高精度な論理分析。スマートな要約・戦略構築</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:text-emerald-400 transition"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- -->
     <!-- =====================================
          JAVASCRIPT CODE (アプリ本体のロジック)
     ====================================== -->
@@ -744,11 +862,12 @@
             goalAmount: parseFloat(localStorage.getItem("goalAmount")) || 100000,
             profileImg: localStorage.getItem("profileImg") || "",
             apiKey: localStorage.getItem("gemini_apiKey") || "",
+            openaiApiKey: localStorage.getItem("openai_apiKey") || "", // 🆕 追加
             activeChartSource: 'assets',
             showCombinedSum: localStorage.getItem("showCombinedSum") === "true",
             disclaimerAgreed: localStorage.getItem("disclaimerAgreed") === "true",
             
-            // コアデータ (初期状態はすべて空っぽでスタート)
+            // コアデータ
             assets: JSON.parse(localStorage.getItem("assets")) || [],
             projects: JSON.parse(localStorage.getItem("projects")) || [],
             accounts: JSON.parse(localStorage.getItem("accounts")) || [],
@@ -762,12 +881,14 @@
         let pendingRestoreData = "";
         let visibleFields = {};
         let portfolioChartInstance = null;
+        let selectedProjectForAi = ""; // 🆕 リサーチ対象を一時保持
 
         // 初期化処理
         window.onload = function() {
             setTheme(state.theme);
             
             document.getElementById('geminiApiKey').value = state.apiKey;
+            document.getElementById('openaiApiKey').value = state.openaiApiKey; // 🆕 反映
             document.getElementById('goalAmountInput').value = state.goalAmount;
             document.getElementById('toggleCombinedSum').checked = state.showCombinedSum;
             
@@ -1218,7 +1339,7 @@
                         ${proj.notes || 'タスクメモなし'}
                     </p>
 
-                    <!-- クイックリンク & AIボタン -->
+                    <!-- クイックリンク & AI選択ボタン -->
                     <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-gray-100 dark:border-slate-850/50">
                         <div class="flex gap-2">
                             ${proj.xLink ? `<a href="${proj.xLink}" target="_blank" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-850 hover:bg-indigo-600/20 text-slate-400 hover:text-indigo-400 flex items-center justify-center transition" title="X"><i class="fa-brands fa-x-twitter text-sm"></i></a>` : ''}
@@ -1228,7 +1349,8 @@
                         </div>
                         
                         <div class="flex gap-2">
-                            <button onclick="runAiResearch('${proj.name}')" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 text-[10px] font-black px-3 py-2 rounded-xl transition flex items-center gap-1 border border-indigo-500/20">
+                            <!-- 🆕 runAiResearch直コールから、AIセレクトモーダル展開に変更 -->
+                            <button onclick="openAiSelectModal('${proj.name}')" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 text-[10px] font-black px-3 py-2 rounded-xl transition flex items-center gap-1 border border-indigo-500/20">
                                 <i class="fa-solid fa-robot"></i> AIリサーチ
                             </button>
                             <button onclick="editProject('${proj.id}')" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-slate-300 text-[10px] font-bold px-3 py-2 rounded-xl transition">
@@ -1429,74 +1551,132 @@
         }
 
         // =====================================
-        // 🤖 AIリサーチャー (Gemini 2.5 API with Search Grounding)
+        // 🆕 AIリサーチ分岐制御（Gemini vs ChatGPT）
         // =====================================
-        async function runAiResearch(projectName) {
-            const apiKey = state.apiKey;
-            if (!apiKey) {
-                showToast("SettingsからGemini APIキーを登録してください。");
-                switchView('settings');
-                return;
+        function openAiSelectModal(projectName) {
+            selectedProjectForAi = projectName;
+            document.getElementById('aiSelectModal').classList.remove('hidden');
+        }
+
+        function selectAiModel(modelType) {
+            closeModal('aiSelectModal');
+            runAiResearch(selectedProjectForAi, modelType);
+        }
+
+        // =====================================
+        // 🤖 AIリサーチャー（Gemini 2.5 & ChatGPT統合対応版）
+        // =====================================
+        async function runAiResearch(projectName, modelType) {
+            let apiKey = "";
+            let apiEndpoint = "";
+            let payload = {};
+            let isChatGpt = modelType === 'chatgpt';
+
+            // 各種AIキーチェック
+            if (isChatGpt) {
+                apiKey = state.openaiApiKey;
+                if (!apiKey) {
+                    showToast("SettingsからChatGPT(OpenAI) APIキーを登録してください。");
+                    switchView('settings');
+                    return;
+                }
+            } else {
+                apiKey = state.apiKey;
+                if (!apiKey) {
+                    showToast("SettingsからGemini APIキーを登録してください。");
+                    switchView('settings');
+                    return;
+                }
             }
 
             const modal = document.getElementById('aiResearchModal');
             const title = document.getElementById('researchProjectName');
             const content = document.getElementById('researchContent');
+            const iconWrapper = document.getElementById('aiResearchIconWrapper');
+            const providerLabel = document.getElementById('aiResearchProviderLabel');
             
-            title.textContent = `${projectName} - 最新AIリサーチ`;
-            content.innerHTML = `
-                <div class="flex flex-col items-center justify-center py-12">
-                    <div class="animate-spin rounded-full h-8 w-8 border-2 border-indigo-500 border-t-transparent mb-4"></div>
-                    <p class="text-xs text-indigo-400 font-bold">Google Search Grounding でリアルタイム情報を検索中...</p>
-                    <p class="text-[10px] text-slate-500 mt-1">数秒かかる場合があります</p>
-                </div>
-            `;
+            // 接続中のテーマデザイン変更
+            if (isChatGpt) {
+                title.textContent = `${projectName} - ChatGPT分析`;
+                iconWrapper.className = "w-9 h-9 rounded-full bg-emerald-600/20 flex items-center justify-center text-emerald-400";
+                providerLabel.textContent = "Powered by OpenAI gpt-4o-mini";
+                content.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-8 w-8 border-2 border-emerald-500 border-t-transparent mb-4"></div>
+                        <p class="text-xs text-emerald-400 font-bold">ChatGPTが超高速でポートフォリオ分析中...</p>
+                        <p class="text-[10px] text-slate-500 mt-1">高度な戦略をまとめています</p>
+                    </div>
+                `;
+            } else {
+                title.textContent = `${projectName} - Geminiリサーチ`;
+                iconWrapper.className = "w-9 h-9 rounded-full bg-indigo-600/20 flex items-center justify-center text-indigo-400";
+                providerLabel.textContent = "Powered by Gemini 2.5 & Search Grounding";
+                content.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-8 w-8 border-2 border-indigo-500 border-t-transparent mb-4"></div>
+                        <p class="text-xs text-indigo-400 font-bold">Google Search Grounding でリアルタイム情報を検索中...</p>
+                        <p class="text-[10px] text-slate-500 mt-1">最新情報をスキャン中</p>
+                    </div>
+                `;
+            }
             modal.classList.remove('hidden');
 
-            const systemPrompt = "あなたは最強のWeb3・仮想通貨の戦略エアドロハンターです。指定された暗号資産プロジェクトに関して、最新 of タスクアップデート、Xの重要発表、テストネット・メインネットの現段階、セキュリティリスク、必要なアクションを、客観的かつ明確な箇条書き(Markdown形式)で整理・報告してください。";
-
-            const userQuery = `仮想通貨プロジェクト 「${projectName}」 についての、最新のエアドロップ状況、本日時点の活動タスク、および注意すべきポイント・SNS of 速報内容を日本語で包括的に要約してください。`;
+            const systemPrompt = "あなたは最強のWeb3・仮想通貨の戦略エアドロハンターです。指定された暗号資産プロジェクトに関して、最新のタスクアップデート、Xの重要発表、テストネット・メインネットの現段階、セキュリティリスク、必要なアクションを、客観的かつ明確な箇条書き(Markdown形式)で整理・報告してください。";
+            const userQuery = `仮想通貨プロジェクト 「${projectName}」 についての、最新のエアドロップ状況、本日時点の活動タスク、および注意すべきポイント・SNSの速報内容を日本語で包括的に要約してください。`;
 
             let attempts = 0;
             const maxRetries = 5;
             let currentDelay = 1000;
 
             const makeRequest = async () => {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-                const payload = {
-                    contents: [{ parts: [{ text: userQuery }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    tools: [{ "google_search": {} }] 
-                };
-
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
+                if (isChatGpt) {
+                    apiEndpoint = `https://api.openai.com/v1/chat/completions`;
+                    payload = {
+                        model: "gpt-4o-mini",
+                        messages: [
+                            { role: "system", content: systemPrompt },
+                            { role: "user", content: userQuery }
+                        ]
+                    };
+                    const response = await fetch(apiEndpoint, {
+                        method: "POST",
+                        headers: { 
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`OpenAI API Error: ${response.status}`);
+                    return await response.json();
+                } else {
+                    apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                    payload = {
+                        contents: [{ parts: [{ text: userQuery }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                        tools: [{ "google_search": {} }] 
+                    };
+                    const response = await fetch(apiEndpoint, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`Gemini API Error: ${response.status}`);
+                    return await response.json();
                 }
-                return await response.json();
             };
 
             while (attempts < maxRetries) {
                 try {
                     const result = await makeRequest();
-                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                    
-                    if (text) {
-                        let formattedText = text
-                            .replace(/\*\*(.*?)\*\//g, '<strong class="text-white">$1</strong>')
-                            .replace(/\*(.*?)\*/g, '<em class="text-indigo-300">$1</em>')
-                            .replace(/### (.*?)\n/g, '<h4 class="text-sm font-black text-indigo-300 mt-4 mb-1.5 flex items-center gap-1"><i class="fa-solid fa-arrow-right-long text-xs"></i> $1</h4>')
-                            .replace(/## (.*?)\n/g, '<h3 class="text-base font-black text-indigo-400 mt-5 mb-2 border-b border-slate-800 pb-1">$1</h3>')
-                            .replace(/# (.*?)\n/g, '<h2 class="text-lg font-black text-white mt-6 mb-3">$1</h2>')
-                            .replace(/\n/g, '<br>');
+                    let text = "";
+                    let attributionsHtml = "";
 
+                    if (isChatGpt) {
+                        text = result.choices?.[0]?.message?.content;
+                    } else {
+                        text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                        // Geminiのサーチグラウンディング用アトリビューション解析
                         const attributions = result.candidates?.[0]?.groundingMetadata?.groundingAttributions;
-                        let attributionsHtml = "";
                         if (attributions && attributions.length > 0) {
                             attributionsHtml = `<div class="mt-6 pt-3 border-t border-slate-850">
                                 <p class="text-[10px] text-gray-400 font-bold mb-2"><i class="fa-solid fa-square-rss mr-1 text-emerald-400"></i>参照Web情報源:</p>
@@ -1512,6 +1692,17 @@
                             });
                             attributionsHtml += `</div></div>`;
                         }
+                    }
+                    
+                    if (text) {
+                        // シンプルなMarkdown風パース
+                        let formattedText = text
+                            .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em class="text-indigo-300">$1</em>')
+                            .replace(/### (.*?)\n/g, '<h4 class="text-sm font-black text-indigo-300 mt-4 mb-1.5 flex items-center gap-1"><i class="fa-solid fa-arrow-right-long text-xs"></i> $1</h4>')
+                            .replace(/## (.*?)\n/g, '<h3 class="text-base font-black text-indigo-400 mt-5 mb-2 border-b border-slate-800 pb-1">$1</h3>')
+                            .replace(/# (.*?)\n/g, '<h2 class="text-lg font-black text-white mt-6 mb-3">$1</h2>')
+                            .replace(/\n/g, '<br>');
 
                         content.innerHTML = `
                             <div class="space-y-2">
@@ -1521,7 +1712,7 @@
                         `;
                         return;
                     } else {
-                        throw new Error("応答のパースに失敗しました。");
+                        throw new Error("応答の解析に失敗しました。");
                     }
                 } catch (error) {
                     attempts++;
@@ -1529,9 +1720,9 @@
                         content.innerHTML = `
                             <div class="text-center py-6 text-rose-400">
                                 <i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i>
-                                <p class="text-xs font-bold">リサーチ呼び出しに失敗しました。</p>
+                                <p class="text-xs font-bold">リサーチの実行に失敗しました。</p>
                                 <p class="text-[10px] text-gray-500 mt-1">${error.message}</p>
-                                <button onclick="runAiResearch('${projectName}')" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">再試行する</button>
+                                <button onclick="runAiResearch('${projectName}', '${modelType}')" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">再試行する</button>
                             </div>
                         `;
                     }
@@ -1543,7 +1734,7 @@
 
         function copyResearchResult() {
             const container = document.getElementById('researchContent');
-            copyToClipboard(container.innerText, "AIリサーチ結果をコピーしました！");
+            copyToClipboard(container.innerText, "AI分析結果をコピーしました！");
         }
 
         // =====================================
@@ -1766,50 +1957,41 @@
         }
 
         // =====================================
-        // 🆕 新機能: プロフィール写真アップロード ＆ リサイズ・高圧縮保存 (V15追加)
+        // プロフィールアルバムアップロード
         // =====================================
-        function triggerProfileImgSelect() {
-            document.getElementById('profileImgFile').click();
+        function triggerProfileSelect() {
+            document.getElementById('profileFileInput').click();
         }
 
-        function handleProfileImgUpload(event) {
+        function handleProfileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            showToast("プロフィール画像を最適化中...");
-
+            showToast("プロフィール画像を処理中...");
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    // LocalStorageの容量制限（5MB）を確実にクリアするため、
-                    // ヘッダー表示に最適な128x128ピクセルにCanvasで自動縮小・軽量化
                     const canvas = document.createElement('canvas');
-                    const size = 128;
-                    canvas.width = size;
-                    canvas.height = size;
+                    canvas.width = 128;
+                    canvas.height = 128;
                     const ctx = canvas.getContext('2d');
-
-                    // アスペクト比を保ちつつ、中央を真四角に切り抜き描画
+                    
                     const minDim = Math.min(img.width, img.height);
                     const sx = (img.width - minDim) / 2;
                     const sy = (img.height - minDim) / 2;
-
-                    ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
-
-                    // 容量節約のためにJPEG（画質80%）で圧縮し、Base64文字列に変換
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
-
-                    // 状態とローカルメモリを同時に更新
-                    state.profileImg = compressedBase64;
-                    localStorage.setItem("profileImg", compressedBase64);
                     
+                    ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 128, 128);
+                    const dataUrl = canvas.toDataURL('image/png', 0.85);
+
+                    state.profileImg = dataUrl;
+                    localStorage.setItem("profileImg", dataUrl);
                     updateProfileUI();
-                    showToast("プロフィール写真を更新しました！");
+                    showToast("プロフィール画像を更新しました！");
                 };
                 img.src = e.target.result;
             };
-            reader.readAsDataURL(file); // 画像をBase64データとして非同期読み込み
+            reader.readAsDataURL(file);
         }
 
         // =====================================
@@ -1842,6 +2024,14 @@
             state.apiKey = key;
             localStorage.setItem("gemini_apiKey", key);
             showToast("Gemini APIキーを安全に保存しました");
+        }
+
+        // 🆕 OpenAI API保存
+        function saveOpenaiApiKey() {
+            const key = document.getElementById('openaiApiKey').value.trim();
+            state.openaiApiKey = key;
+            localStorage.setItem("openai_apiKey", key);
+            showToast("ChatGPT (OpenAI) APIキーを安全に保存しました");
         }
 
         function saveGoalAmount() {
@@ -2006,6 +2196,7 @@
                         state.accounts = parsed.accounts || [];
                         state.goalAmount = parsed.goalAmount || 100000;
                         state.apiKey = parsed.apiKey || "";
+                        state.openaiApiKey = parsed.openaiApiKey || ""; // 復元
                         state.savedPin = parsed.savedPin || "";
                         state.profileImg = parsed.profileImg || "";
 
@@ -2014,6 +2205,7 @@
                         localStorage.setItem("accounts", JSON.stringify(state.accounts));
                         localStorage.setItem("goalAmount", state.goalAmount);
                         localStorage.setItem("gemini_apiKey", state.apiKey);
+                        localStorage.setItem("openai_apiKey", state.openaiApiKey);
                         localStorage.setItem("savedPin", state.savedPin);
                         localStorage.setItem("profileImg", state.profileImg);
 
@@ -2068,6 +2260,11 @@
 
         function openApiGuideModal() {
             document.getElementById('apiGuideModal').classList.remove('hidden');
+        }
+
+        // 🆕 OpenAI APIガイド展開
+        function openOpenaiApiGuideModal() {
+            document.getElementById('openaiApiGuideModal').classList.remove('hidden');
         }
 
         function closeModal(id) {
