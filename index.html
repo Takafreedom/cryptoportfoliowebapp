@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Web3 Portfolio Pro V17</title>
+    <title>Web3 Portfolio Pro V18</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -131,12 +131,12 @@
                     </div>
                     <div>
                         <h1 class="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                            Portfolio Pro V17
+                            Portfolio Pro V18
                         </h1>
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <!-- 🆕 🔔 Web3シグナル通知ベルボタン（未読バッジ付き） -->
+                    <!-- 🔔 Web3シグナル通知ベルボタン（未読バッジ付き） -->
                     <button onclick="openNotificationModal()" class="w-10 h-10 rounded-full border border-gray-200 dark:border-slate-800 shadow-sm hover:bg-gray-100 dark:hover:bg-slate-800 transition flex items-center justify-center text-gray-500 dark:text-slate-400 relative">
                         <i class="fa-solid fa-bell text-lg"></i>
                         <span id="notifBadge" class="absolute top-1.5 right-1.5 w-3 h-3 bg-rose-500 rounded-full border-2 border-white dark:border-slate-950 hidden"></span>
@@ -144,9 +144,9 @@
                     <button onclick="togglePrivacy()" id="btnPrivacy" class="w-10 h-10 rounded-full border border-gray-200 dark:border-slate-800 shadow-sm hover:bg-gray-100 dark:hover:bg-slate-800 transition flex items-center justify-center text-gray-500 dark:text-slate-400">
                         <i class="fa-solid fa-eye" id="privacyIcon"></i>
                     </button>
-                    <!-- 🆕 更新時、裏側でXリマインダー自動スキャンを連動 -->
+                    <!-- 更新時、裏側でXリマインダー自動スキャンを連動（ぐるぐるアニメーション用IDを付与） -->
                     <button onclick="refreshData()" class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-full shadow-lg shadow-indigo-500/20 transition font-bold flex items-center gap-1">
-                        <i class="fa-solid fa-rotate animate-spin-hover"></i> 更新
+                        <i class="fa-solid fa-rotate" id="refreshIcon"></i> 更新
                     </button>
                 </div>
             </header>
@@ -329,7 +329,7 @@
                     </div>
                 </div>
 
-                <!-- 🆕 ChatGPT (OpenAI) API設定 -->
+                <!-- ChatGPT (OpenAI) API設定 -->
                 <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
                     <h3 class="text-sm font-bold text-emerald-400 mb-3 flex items-center gap-1.5">
                         <i class="fa-solid fa-bolt"></i> AIリサーチャー設定 (ChatGPT API)
@@ -370,7 +370,7 @@
                     </div>
                 </div>
 
-                <!-- 📷 プロフィール設定 -->
+                <!-- 📷 プロフィール設定 (iOSファイルアクセス制限をラベル構造で100%回避するスマート設計に強化！) -->
                 <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
                     <h3 class="text-sm font-bold text-indigo-400 mb-2 flex items-center gap-1.5">
                         <i class="fa-solid fa-id-card"></i> プロフィール設定
@@ -384,10 +384,11 @@
                             <img id="settingsProfileImg" class="w-full h-full object-cover hidden">
                         </div>
                         <div class="flex-1">
-                            <input type="file" id="profileFileInput" accept="image/*" class="hidden" onchange="handleProfileUpload(event)">
-                            <button onclick="triggerProfileSelect()" class="bg-indigo-600 hover:bg-indigo-750 text-white text-xs px-4 py-2.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow-lg shadow-indigo-500/10">
+                            <!-- 💡 labelタグでinputを包み込むことで、iOS Safariのプログラム的なクリックブロック制限を完璧に回避 -->
+                            <label class="bg-indigo-600 hover:bg-indigo-750 text-white text-xs px-4 py-2.5 rounded-xl font-bold transition flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/10 cursor-pointer w-fit">
                                 <i class="fa-solid fa-image"></i> 写真から選択する
-                            </button>
+                                <input type="file" id="profileFileInput" accept="image/*" class="hidden" onchange="handleProfileUpload(event)">
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -435,11 +436,11 @@
                 <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-100 dark:border-slate-800">
                     <h3 class="text-sm font-bold mb-3"><i class="fa-solid fa-database mr-1.5"></i>暗号化バックアップと復元</h3>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="openBackupCryptoModal('encrypt')" class="bg-emerald-600/15 hover:bg-emerald-600/20 text-emerald-400 py-3.5 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1.5 border border-emerald-500/20">
+                        <button onclick="openBackupCryptoModal('encrypt')" class="bg-emerald-600/15 hover:bg-emerald-600/20 text-emerald-400 py-3.5 rounded-2xl text-xs font-bold transition flex items-center gap-1.5 border border-emerald-500/20">
                             <i class="fa-solid fa-file-shield text-lg animate-pulse"></i>
                             暗号化して保存
                         </button>
-                        <button onclick="triggerRestore()" class="bg-indigo-600/15 hover:bg-indigo-600/20 text-indigo-400 py-3.5 rounded-2xl text-xs font-bold transition flex flex-col items-center gap-1.5 border border-indigo-500/20">
+                        <button onclick="triggerRestore()" class="bg-indigo-600/15 hover:bg-indigo-600/20 text-indigo-400 py-3.5 rounded-2xl text-xs font-bold transition flex items-center gap-1.5 border border-indigo-500/20">
                             <i class="fa-solid fa-key text-lg"></i>
                             暗号を解いて復元
                         </button>
@@ -582,7 +583,7 @@
                         <label class="block text-xs font-bold text-gray-400 mb-1">メモ / 現在のタスク状況</label>
                         <textarea id="projNotes" rows="2" placeholder="例: テストネット完了、メインネットファーム継続中。NFT保有中。" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl px-3.5 py-2 text-xs focus:outline-none text-white resize-none"></textarea>
                     </div>
-                    <!-- 🆕 X(Twitter)連動通知およびタスク自動リマインドのON/OFFトグル -->
+                    <!-- X(Twitter)連動通知およびタスク自動リマインドのON/OFFトグル -->
                     <div class="flex items-center justify-between p-3 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850/80">
                         <div>
                             <span class="text-xs font-bold text-white block"><i class="fa-solid fa-bell text-indigo-400 mr-1"></i>X通知 & タスクリマインダー</span>
@@ -703,7 +704,7 @@
             </div>
         </div>
 
-        <!-- モーダル6: 暗号化パスワード入力用 -->
+        <!-- モーダル6: 暗号化パスワード入力用 (AESキー) -->
         <div id="backupCryptoModal" class="fixed inset-0 z-[130] flex items-center justify-center glass-modal hidden">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative">
                 <button onclick="closeModal('backupCryptoModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
@@ -861,7 +862,7 @@
             </div>
         </div>
 
-        <!-- 🆕 モーダル10: 🔔 Web3シグナル通知センター (X速報 & タスク要約リマインダー) -->
+        <!-- 🔔 Web3シグナル通知センター (X速報 & タスク要約リマインダー) -->
         <div id="notificationModal" class="fixed inset-0 z-[120] flex items-center justify-center glass-modal hidden">
             <div class="bg-white dark:bg-slate-900 w-full max-w-sm mx-4 p-5 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-2xl relative flex flex-col max-h-[85vh]">
                 <button onclick="closeModal('notificationModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white transition text-lg"><i class="fa-solid fa-xmark"></i></button>
@@ -921,7 +922,7 @@
             assets: JSON.parse(localStorage.getItem("assets")) || [],
             projects: JSON.parse(localStorage.getItem("projects")) || [],
             accounts: JSON.parse(localStorage.getItem("accounts")) || [],
-            // 🆕 通知リスト
+            // 通知リスト
             notifications: JSON.parse(localStorage.getItem("notif_list")) || [],
             
             editingAssetId: null,
@@ -945,7 +946,7 @@
             document.getElementById('toggleCombinedSum').checked = state.showCombinedSum;
             
             updateProfileUI();
-            updateNotifBadge(); // 🆕 通知バッジを更新
+            updateNotifBadge(); // 通知バッジを更新
 
             // 免責同意有無のチェック（最優先）
             if (!state.disclaimerAgreed) {
@@ -1606,7 +1607,7 @@
         }
 
         // =====================================
-        // 🆕 AIリサーチ分岐制御（Gemini vs ChatGPT）
+        // AIリサーチ分岐制御（Gemini vs ChatGPT）
         // =====================================
         function openAiSelectModal(projectName) {
             selectedProjectForAi = projectName;
@@ -1676,7 +1677,7 @@
             }
             modal.classList.remove('hidden');
 
-            const systemPrompt = "あなたは最強のWeb3・仮想通貨の戦略エアドロハンターです。指定された暗号資産プロジェクトに関して、最新のタスクアップデート、Xの重要発表、テストネット・メインネットの現段階、セキュリティリスク、必要なアクションを、客観的かつ明確な箇条書き(Markdown形式)で整理・報告してください。";
+            const systemPrompt = "あなたは最強のWeb3・仮想通貨の戦略エアドロハンターです。指定された暗号資産プロジェクトに関して、最新のタスクアップデート、Xの重要発表、テストネット・メインネット of 現段階、セキュリティリスク、必要なアクションを、客観的かつ明確な箇条書き(Markdown形式)で整理・報告してください。";
             const userQuery = `仮想通貨プロジェクト 「${projectName}」 についての、最新のエアドロップ状況、本日時点の活動タスク、および注意すべきポイント・SNSの速報内容を日本語で包括的に要約してください。`;
 
             let attempts = 0;
@@ -1791,7 +1792,7 @@
         }
 
         // =====================================
-        // 🆕 🔔 Web3シグナル通知センターの処理
+        // 🔔 Web3シグナル通知センターの処理
         // =====================================
         function openNotificationModal() {
             renderNotifications();
@@ -1828,7 +1829,6 @@
 
             sorted.forEach(notif => {
                 const card = document.createElement('div');
-                // 未読は左側に太いインディゴのボーダー
                 const unreadBorder = notif.isRead ? 'border-slate-800' : 'border-l-4 border-l-indigo-500 border-slate-800';
                 const dateStr = new Date(notif.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -1844,12 +1844,10 @@
                     <p class="text-[11px] text-gray-400 leading-normal">${notif.summary}</p>
                 `;
                 
-                // 開いた時点で既読に設定
                 notif.isRead = true;
                 container.appendChild(card);
             });
 
-            // 既読状態を永続化
             state.notifications = sorted;
             localStorage.setItem("notif_list", JSON.stringify(state.notifications));
             updateNotifBadge();
@@ -1863,21 +1861,21 @@
             showToast("通知をすべて消去しました");
         }
 
-        // 🆕 【X自動リマインド通知生成ロジック】
+        // 【X自動リマインド通知生成ロジック】
         async function scanProjectXUpdates() {
-            // X追跡トグルがONのPJを抽出
             const trackablePjs = state.projects.filter(p => p.trackX);
             if (trackablePjs.length === 0) return;
 
             // APIキーの優先度選択
             const apiKey = state.apiKey || state.openaiApiKey;
-            if (!apiKey) return; // キー未登録ならスキップ
+            if (!apiKey) return;
 
-            const isChatGpt = !state.apiKey && state.openaiApiKey; // Geminiが無ければChatGPTを使う
+            const isChatGpt = !state.apiKey && state.openaiApiKey;
 
             for (const pj of trackablePjs) {
                 try {
                     const systemPrompt = "あなたはWeb3の最高峰ニュースボットです。プロジェクトの直近のXの動向やアナウンス（エアドロ締切、タスクアップデート、新イベント）について、本日時点の最重要リマインダーを1文、それに関する具体的なアクション要約を1文、合計2文で簡潔に報告してください。";
+                    // 💡 「直近24時間い内の」から「直近24時間以内の」へタイポ修正して分析を確実化
                     const userQuery = `仮想通貨プロジェクト 「${pj.name}」 の直近24時間以内の重要Xアナウンスとタスク情報`;
 
                     let text = "";
@@ -1917,12 +1915,10 @@
                     }
 
                     if (text) {
-                        // 出力されたテキストをタイトルとサマリーに分割
                         const lines = text.split(/[。\n]+/).filter(l => l.trim().length > 0);
                         const title = lines[0] ? lines[0].replace(/[*_#\-]/g, "").trim() + "。" : `${pj.name}の重要タスクが更新されました。`;
                         const summary = lines[1] ? lines[1].replace(/[*_#\-]/g, "").trim() + "。" : "公式アナウンスとタスク状況を確認してください。";
 
-                        // 新しい通知をスタック（重複を軽く避けるため直近5件とタイトル比較）
                         const isDuplicate = state.notifications.slice(0, 5).some(n => n.title === title);
                         if (!isDuplicate) {
                             state.notifications.unshift({
@@ -1940,12 +1936,10 @@
                 }
             }
 
-            // 最大50件まで保存
             if (state.notifications.length > 50) {
                 state.notifications = state.notifications.slice(0, 50);
             }
             localStorage.setItem("notif_list", JSON.stringify(state.notifications));
-            updateNotifBadge();
         }
 
         // =====================================
@@ -2022,7 +2016,7 @@
             document.getElementById('projWeb').value = proj.webLink || "";
             document.getElementById('projDebank').value = proj.debankLink || "";
             document.getElementById('projNotes').value = proj.notes || "";
-            document.getElementById('projTrackX').checked = proj.trackX !== false; // 追跡トグル読み込み
+            document.getElementById('projTrackX').checked = proj.trackX !== false;
             document.getElementById('btnDeleteProj').classList.remove('hidden');
             document.getElementById('projectModal').classList.remove('hidden');
         }
@@ -2143,6 +2137,40 @@
         }
 
         // =====================================
+        // プロフィールアルバムアップロード (V18でネイティブ処理に完全対応)
+        // =====================================
+        function handleProfileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showToast("プロフィール画像を処理中...");
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 128;
+                    canvas.height = 128;
+                    const ctx = canvas.getContext('2d');
+                    
+                    const minDim = Math.min(img.width, img.height);
+                    const sx = (img.width - minDim) / 2;
+                    const sy = (img.height - minDim) / 2;
+                    
+                    ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, 128, 128);
+                    const dataUrl = canvas.toDataURL('image/png', 0.85);
+
+                    state.profileImg = dataUrl;
+                    localStorage.setItem("profileImg", dataUrl);
+                    updateProfileUI();
+                    showToast("プロフィール画像を更新しました！");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // =====================================
         // 環境設定その他
         // =====================================
         function togglePrivacy() {
@@ -2159,16 +2187,28 @@
             renderDashboard();
         }
 
+        // 🆕 非同期の自動スキャンを同期的・UX配慮型にリファクタリング！
         async function refreshData() {
-            showToast("価格同期＆Xリマインダーをチェック中...");
+            const refreshIcon = document.getElementById('refreshIcon');
             
-            // AIスキャンを並行して実行（CORS・X APIを迂回したリマインダー作成）
+            // ぐるぐる矢印にスキャン中アニメーションを動的に追加
+            if (refreshIcon) {
+                refreshIcon.classList.add('animate-spin');
+            }
+            showToast("価格同期＆Xリマインダーをスキャン中... 🔔");
+            
+            // AIスキャンが完了するまで「本当に」待つ
             await scanProjectXUpdates();
             
-            setTimeout(() => {
-                renderDashboard();
-                showToast("全データの同期が完了しました！🔔");
-            }, 650);
+            // スキャン完了後にグラフと全体表示を再描画
+            renderDashboard();
+            updateNotifBadge(); // ベルバッジ更新
+            
+            // アニメーションを解除してトーストを投げる
+            if (refreshIcon) {
+                refreshIcon.classList.remove('animate-spin');
+            }
+            showToast("全アセット＆X通知の同期が完了しました！");
         }
 
         function saveApiKey() {
@@ -2195,6 +2235,27 @@
             localStorage.setItem("goalAmount", val);
             showToast("目標金額を更新しました");
             renderDashboard();
+        }
+
+        function updateProfileUI() {
+            const headPlaceholder = document.getElementById('headerProfilePlaceholder');
+            const headImg = document.getElementById('headerProfileImg');
+            const setPlaceholder = document.getElementById('settingsProfilePlaceholder');
+            const setImg = document.getElementById('settingsProfileImg');
+
+            if (state.profileImg) {
+                headPlaceholder.classList.add('hidden');
+                headImg.src = state.profileImg;
+                headImg.classList.remove('hidden');
+                setPlaceholder.classList.add('hidden');
+                setImg.src = state.profileImg;
+                setImg.classList.remove('hidden');
+            } else {
+                headPlaceholder.classList.remove('hidden');
+                headImg.classList.add('hidden');
+                setPlaceholder.classList.remove('hidden');
+                setImg.classList.add('hidden');
+            }
         }
 
         function setTheme(theme) {
@@ -2252,6 +2313,7 @@
             updateLockSettingButton();
         }
 
+        // ロック
         function updateLockSettingButton() {
             const btn = document.getElementById('btnPinSetting');
             if (state.savedPin) {
@@ -2355,7 +2417,6 @@
             document.getElementById('restoreFile').click();
         }
 
-        // 復元ファイルのハンドリング
         function handleRestoreFile(event) {
             const file = event.target.files[0];
             if (!file) return;
