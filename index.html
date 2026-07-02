@@ -10,13 +10,9 @@
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
     
-    <link rel="manifest" href="./manifest.json">
-    
     <!-- 🍎 アプリアイコン静的ヘッダー -->
+    <!-- ※プレビュー環境では画像が見つからないためonerrorで代替画像を読み込むか、空白になります -->
     <link rel="apple-touch-icon" href="./icon-512.jpg">
-    <link rel="apple-touch-icon" sizes="152x152" href="./icon-512.jpg">
-    <link rel="apple-touch-icon" sizes="167x167" href="./icon-512.jpg">
-    <link rel="apple-touch-icon" sizes="180x180" href="./icon-512.jpg">
     <link rel="icon" type="image/jpeg" href="./icon-512.jpg">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -276,6 +272,7 @@
                     </div>
                     <div class="flex flex-col gap-1 pt-2 border-t border-slate-850 text-xs">
                         <a href="https://aistudio.google.com/" target="_blank" class="text-indigo-400 hover:underline flex items-center gap-1">👉 無料APIキー取得 (Google AI Studio)</a>
+                        <!-- ここが機能していなかった箇所 -->
                         <button onclick="openApiGuideModal()" class="text-left text-emerald-400 hover:underline flex items-center gap-1"><i class="fa-solid fa-circle-question"></i> 取得の1分ガイド</button>
                     </div>
                 </div>
@@ -292,6 +289,7 @@
                     </div>
                     <div class="flex flex-col gap-1 pt-2 border-t border-slate-850 text-xs">
                         <a href="https://platform.openai.com/api-keys" target="_blank" class="text-emerald-400 hover:underline flex items-center gap-1">👉 APIキー取得 (OpenAI Platform)</a>
+                        <!-- ここが機能していなかった箇所 -->
                         <button onclick="openOpenaiApiGuideModal()" class="text-left text-indigo-400 hover:underline flex items-center gap-1"><i class="fa-solid fa-circle-question"></i> 取得の1分ガイド</button>
                     </div>
                 </div>
@@ -1965,6 +1963,14 @@
         // =====================================
         // その他設定処理
         // =====================================
+        function openApiGuideModal() {
+            document.getElementById('apiGuideModal')?.classList.remove('hidden');
+        }
+        
+        function openOpenaiApiGuideModal() {
+            document.getElementById('openaiApiGuideModal')?.classList.remove('hidden');
+        }
+
         function saveApiKey() {
             const key = safeGetVal('geminiApiKey');
             state.apiKey = key;
@@ -2286,4 +2292,5 @@
     </script>
 </body>
 </html>
+
 
